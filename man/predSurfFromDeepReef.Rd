@@ -4,10 +4,10 @@
 \alias{predSurfFromDeepReef}
 \title{Predict rs_surface (mean_HC_surf) from rs_deep, reef level}
 \usage{
-predSurfFromDeepReef(post, x, n_draws = 2000)
+predSurfFromDeepReef(post = NULL, x, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"surf_from_deep_reef"} (e.g. \code{readRDS("path/to/surf_from_deep_reef.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"surf_from_deep_reef"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("surf_from_deep_reef")}).}
 
 \item{x}{Numeric vector of predictor values (mean_HC_deep).}
 

@@ -4,10 +4,10 @@
 \alias{predSurfFromMantaCull}
 \title{Predict rs_surface (pct_HC_surf) from manta, cull-site level}
 \usage{
-predSurfFromMantaCull(post, x, n_draws = 2000)
+predSurfFromMantaCull(post = NULL, x, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"surf_from_manta_cull"} (e.g. \code{readRDS("path/to/surf_from_manta_cull.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"surf_from_manta_cull"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("surf_from_manta_cull")}).}
 
 \item{x}{Numeric vector of predictor values (perc_hard).}
 

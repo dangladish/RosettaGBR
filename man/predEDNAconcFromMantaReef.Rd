@@ -4,10 +4,10 @@
 \alias{predEDNAconcFromMantaReef}
 \title{Predict edna_conc (integer_conc_reef (reef-summed PCR eDNA concentration, D-02-literal: sum of sample tech-rep sums across all reef samples, rounded)) from manta, reef level}
 \usage{
-predEDNAconcFromMantaReef(post, x, offset = 0, n_draws = 2000)
+predEDNAconcFromMantaReef(post = NULL, x, offset = 0, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"eDNAconc_from_manta_reef"} (e.g. \code{readRDS("path/to/eDNAconc_from_manta_reef.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"eDNAconc_from_manta_reef"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("eDNAconc_from_manta_reef")}).}
 
 \item{x}{Numeric vector of predictor values (manta_density_raw = (cots_observed+feeding_scars)/n_tows (manta combined count per tow, no x68 rescale)).}
 

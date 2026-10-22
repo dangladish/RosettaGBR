@@ -4,10 +4,10 @@
 \alias{predEDNAconcFromSurfReef}
 \title{Predict edna_conc (integer_conc_reef (reef-summed eDNA concentration)) from rs_surface, reef level}
 \usage{
-predEDNAconcFromSurfReef(post, x, offset = 0, n_draws = 2000)
+predEDNAconcFromSurfReef(post = NULL, x, offset = 0, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"eDNAconc_from_surf_reef"} (e.g. \code{readRDS("path/to/eDNAconc_from_surf_reef.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"eDNAconc_from_surf_reef"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("eDNAconc_from_surf_reef")}).}
 
 \item{x}{Numeric vector of predictor values (surf_density = cots_reefscan_surface/n_tows (RS Surface COTS per tow)).}
 

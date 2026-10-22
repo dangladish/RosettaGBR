@@ -6,7 +6,7 @@
 \usage{
 rosetta_predict(
   model_name,
-  post,
+  post = NULL,
   x,
   offset = 0,
   size = 1,
@@ -19,7 +19,8 @@ rosetta_predict(
 
 \item{post}{Posterior-samples matrix for that model (see
 \code{?predBetaCurve}/\code{?predNegBinCurve}/\code{?predBinomialCurve} for the column
-contract).}
+contract). Defaults to \code{NULL}, which uses the posterior bundled with the
+package (\code{\link[=rosetta_posterior]{rosetta_posterior()}}).}
 
 \item{x}{Numeric vector of predictor values.}
 

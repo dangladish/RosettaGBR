@@ -39,7 +39,7 @@ remotes::install_github(repo = "Scott-Foster/RosettaCOTS")
 
 ## Usage
 
-This package does prediction only; it does not fit models. The 52 BR-04 functions do not bundle posterior samples or data, so you supply a posterior-samples matrix (one row per draw; columns `alpha`/`beta`/`phi` for Beta models, `alpha`/`beta`/`r` for Negative Binomial models, `alpha`/`beta` for Binomial models; population-level terms only, with group effects marginalised to zero). The 32 D-02 functions need no posterior argument, since RosettaCOTS supplies its own bundled posterior internally.
+This package does prediction only; it does not fit models. The posterior draws for all 52 BR-04 models are **bundled with the package** (`inst/extdata/posteriors/`, about 10 MB), so every function works out of the box and the package is fully standalone. Each posterior is a numeric matrix with one row per draw and only the population-level columns needed for prediction (`alpha`/`beta`/`phi` for Beta models, `alpha`/`beta`/`r` for Negative Binomial models, `alpha`/`beta` for Binomial models; group effects are marginalised to zero). Load one with `rosetta_posterior("<model_name>")`, or pass your own matrix of the same form via the `post` argument. The 32 D-02 functions need no posterior argument, since RosettaCOTS supplies its own bundled posterior internally.
 
 ```r
 library(RosettaGBR)
@@ -49,26 +49,27 @@ rosetta_models()
 rosetta_models(source = "br04")  # BR-04 only
 rosetta_models(source = "d02")   # D-02 (RosettaCOTS) only
 
-# --- BR-04 models: supply your own posterior matrix ---
+# --- BR-04 models: bundled posteriors are used by default ---
 # Each model has a dedicated wrapper function, derived mechanically from
 # its model name (manta_from_surf_tow -> predMantaFromSurfTow)
-post <- readRDS("path/to/manta_from_surf_tow.RDS")
+predMantaFromSurfTow(x = seq(0, 1, by = 0.1))
+
+# Inspect a bundled posterior, or pass your own via `post`
+post <- rosetta_posterior("manta_from_surf_tow")
 predMantaFromSurfTow(post, x = seq(0, 1, by = 0.1))
 
 # NegBin / Binomial models that were fit with a log-effort offset require
 # you to supply a representative effort (e.g. mean n_tows, or a specific
 # tow's distance) -- see each function's documentation for which method's
 # effort it expects
-post_nb <- readRDS("path/to/surf_from_manta_tow_cots.RDS")
-predSurfFromMantaTowCots(post_nb, x = c(0, 0.5, 1, 2), offset = log(1))
+predSurfFromMantaTowCots(x = c(0, 0.5, 1, 2), offset = log(1))
 
 # Binomial cull/reef "rate" models (trials()-based, no offset) require a
 # representative trial count instead
-post_bin <- readRDS("path/to/manta_from_surf_binary_reef_cots.RDS")
-predMantaFromSurfBinaryReefCots(post_bin, x = c(0, 0.5, 1), size = 12)
+predMantaFromSurfBinaryReefCots(x = c(0, 0.5, 1), size = 12)
 
 # Programmatic / loop-friendly alternative to the named wrappers
-rosetta_predict("manta_from_surf_tow", post, x = seq(0, 1, by = 0.1))
+rosetta_predict("manta_from_surf_tow", x = seq(0, 1, by = 0.1))
 
 # --- D-02 models: no posterior argument needed, RosettaCOTS supplies one ---
 predCullFromManta(manta_scars = c(0, 4, 10), manta.nTows = 4)
@@ -94,8 +95,10 @@ RosettaGBR also re-exports RosettaCOTS's own 32 D-02 models under the same disco
 
 - `R/predict-curves.R`: the three family-specific prediction engines (`predBetaCurve()`, `predNegBinCurve()`, `predBinomialCurve()`). BR-04 models only.
 - `R/predict-dispatch.R`: `rosetta_predict()`, a registry-driven dispatcher used internally by every BR-04 wrapper function (and usable directly).
+- `R/posteriors.R`: `rosetta_posterior()`, which loads a bundled posterior.
 - `R/registry.R`: `rosetta_models()` (merges both registries, with a `source` column) and the internal BR-04 model-name to wrapper-function-name transform.
 - `R/wrappers.R`: BR-04's 52 wrappers, **generated, not hand-written**; see `data-raw/generate_wrappers.R`. Re-run that script (then `devtools::document()`) whenever `inst/extdata/model_registry.csv` changes.
+- `inst/extdata/posteriors/`: the bundled posterior draws, one `<model_name>.RDS` per BR-04 model. Rebuilt from a directory of full posterior files by `data-raw/build_posteriors.R`.
 - `inst/extdata/model_registry.csv`: one row per BR-04 model: family, spatial level, response/predictor method, link function, offset/eps convention, grouping, and the representative trial count used for Binomial prediction intervals.
 - `R/wrappers_d02.R`: D-02's 32 pass-through wrappers, **generated, not hand-written**; see `data-raw/generate_d02_wrappers.R`. Re-run that script (then `devtools::document()`) whenever `inst/extdata/d02_model_registry.csv` changes, or a new RosettaCOTS version adds, renames or changes the signature of one of these functions.
 - `inst/extdata/d02_model_registry.csv`: one row per D-02 model, with notes on which RosettaCOTS internal function and bundled posterior it forwards to.
@@ -103,7 +106,7 @@ RosettaGBR also re-exports RosettaCOTS's own 32 D-02 models under the same disco
 
 ## Status
 
-v0.1.0. Prediction engine plus the full 52-model BR-04 registry and wrapper set, and 32 D-02 pass-through wrappers. Tested against synthetic posteriors and, for the D-02 wrappers, a bit-for-bit equivalence check against calling RosettaCOTS's internal function directly (`tests/testthat/`). Not yet validated against real fitted posteriors end-to-end in an automated test.
+v0.2.0. Prediction engine plus the full 52-model BR-04 registry and wrapper set, bundled posteriors, and 32 D-02 pass-through wrappers. Tested against synthetic posteriors and, for the D-02 wrappers, a bit-for-bit equivalence check against calling RosettaCOTS's internal function directly (`tests/testthat/`). Every bundled posterior and wrapper is exercised by the test suite.
 
 ## Funding
 

@@ -4,10 +4,10 @@
 \alias{predSurfFromEDNApropReef}
 \title{Predict rs_surface (cots_reefscan_surface (RS Surface raw COTS count)) from edna_prop, reef level}
 \usage{
-predSurfFromEDNApropReef(post, x, offset = 0, n_draws = 2000)
+predSurfFromEDNApropReef(post = NULL, x, offset = 0, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"surf_from_eDNAprop_reef"} (e.g. \code{readRDS("path/to/surf_from_eDNAprop_reef.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"surf_from_eDNAprop_reef"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("surf_from_eDNAprop_reef")}).}
 
 \item{x}{Numeric vector of predictor values (edna_prop_reef (eDNA proportion positive)).}
 

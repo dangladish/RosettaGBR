@@ -4,10 +4,10 @@
 \alias{predMantaFromDeepReef}
 \title{Predict manta (mean_HC_manta) from rs_deep, reef level}
 \usage{
-predMantaFromDeepReef(post, x, n_draws = 2000)
+predMantaFromDeepReef(post = NULL, x, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"manta_from_deep_reef"} (e.g. \code{readRDS("path/to/manta_from_deep_reef.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"manta_from_deep_reef"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("manta_from_deep_reef")}).}
 
 \item{x}{Numeric vector of predictor values (mean_HC_deep).}
 

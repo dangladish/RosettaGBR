@@ -4,10 +4,10 @@
 \alias{predMantaFromSurfBinaryReefCots}
 \title{Predict manta (manta_combined successes out of n_tows trials) from rs_surface, reef level}
 \usage{
-predMantaFromSurfBinaryReefCots(post, x, size, n_draws = 2000)
+predMantaFromSurfBinaryReefCots(post = NULL, x, size, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"manta_from_surf_binary_reef_cots"} (e.g. \code{readRDS("path/to/manta_from_surf_binary_reef_cots.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"manta_from_surf_binary_reef_cots"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("manta_from_surf_binary_reef_cots")}).}
 
 \item{x}{Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).}
 
@@ -25,6 +25,8 @@ Predict manta (manta_combined successes out of n_tows trials) from rs_surface, r
 Response: manta_combined successes out of n_tows trials. Predictor: RS
 Surface density = y_surf/effort_surf. Binomial regression (successes out of
 trials), logit link, no offset; predictor enters as log(x + eps) with eps =
-0.0001. No group-level random effect; predictions are population-level.
-Prediction intervals use a representative trial count (see pi_size).
+0.0001. No group-level random effect; includes an observation-level reef
+effect, so the prediction interval is for a new reef (mean and credible
+interval are for an average reef). Prediction intervals use a
+representative trial count (see pi_size).
 }

@@ -11,7 +11,8 @@
 #' @param model_name One of `rosetta_models()$model_name`.
 #' @param post Posterior-samples matrix for that model (see
 #'   `?predBetaCurve`/`?predNegBinCurve`/`?predBinomialCurve` for the column
-#'   contract).
+#'   contract). Defaults to `NULL`, which uses the posterior bundled with the
+#'   package ([rosetta_posterior()]).
 #' @param x Numeric vector of predictor values.
 #' @param offset Log-effort offset, for `"negbin"` models or `"binomial"`
 #'   models fit with `has_offset = TRUE` (see `rosetta_models()`). Ignored
@@ -25,7 +26,7 @@
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] /
 #'   [predBinomialCurve()].
 #' @export
-rosetta_predict <- function(model_name, post, x, offset = 0, size = 1,
+rosetta_predict <- function(model_name, post = NULL, x, offset = 0, size = 1,
                              eps = NULL, n_draws = 2000) {
   reg <- rosetta_models(include_diagnostic = TRUE, source = "br04")
   row <- reg[reg$model_name == model_name, ]
@@ -44,6 +45,7 @@ rosetta_predict <- function(model_name, post, x, offset = 0, size = 1,
          "no prediction contract is defined for it.", call. = FALSE)
   }
   eps_val <- if (is.null(eps)) row$eps else eps
+  if (is.null(post)) post <- rosetta_posterior(model_name)
 
   switch(row$family,
     beta = predBetaCurve(post, x, n_draws = n_draws),

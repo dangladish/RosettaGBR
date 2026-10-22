@@ -4,10 +4,10 @@
 \alias{predMantaFromSurfTowCots}
 \title{Predict manta (has_manta = scar_present==1 OR cots_observed>0 (Binomial n=1)) from rs_surface, tow level}
 \usage{
-predMantaFromSurfTowCots(post, x, offset = 0, n_draws = 2000)
+predMantaFromSurfTowCots(post = NULL, x, offset = 0, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"manta_from_surf_tow_cots"} (e.g. \code{readRDS("path/to/manta_from_surf_tow_cots.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"manta_from_surf_tow_cots"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("manta_from_surf_tow_cots")}).}
 
 \item{x}{Numeric vector of predictor values (surf_density = cots_reefscan_surface (RS Surface per-tow count, effort_surf=1)).}
 

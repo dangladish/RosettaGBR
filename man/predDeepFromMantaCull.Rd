@@ -4,10 +4,10 @@
 \alias{predDeepFromMantaCull}
 \title{Predict rs_deep (pct_HC_deep) from manta, cull-site level}
 \usage{
-predDeepFromMantaCull(post, x, n_draws = 2000)
+predDeepFromMantaCull(post = NULL, x, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"deep_from_manta_cull"} (e.g. \code{readRDS("path/to/deep_from_manta_cull.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"deep_from_manta_cull"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("deep_from_manta_cull")}).}
 
 \item{x}{Numeric vector of predictor values (perc_hard).}
 

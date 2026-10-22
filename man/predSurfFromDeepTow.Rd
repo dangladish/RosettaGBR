@@ -4,10 +4,10 @@
 \alias{predSurfFromDeepTow}
 \title{Predict rs_surface (pct_HC_surf) from rs_deep, tow level}
 \usage{
-predSurfFromDeepTow(post, x, n_draws = 2000)
+predSurfFromDeepTow(post = NULL, x, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"surf_from_deep_tow"} (e.g. \code{readRDS("path/to/surf_from_deep_tow.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"surf_from_deep_tow"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("surf_from_deep_tow")}).}
 
 \item{x}{Numeric vector of predictor values (pct_HC_deep).}
 

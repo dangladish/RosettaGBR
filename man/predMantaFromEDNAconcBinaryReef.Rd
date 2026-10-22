@@ -4,10 +4,10 @@
 \alias{predMantaFromEDNAconcBinaryReef}
 \title{Predict manta (manta_combined successes out of n_tows trials (combined COTS+scar presence rate)) from edna_conc, reef level}
 \usage{
-predMantaFromEDNAconcBinaryReef(post, x, size, n_draws = 2000)
+predMantaFromEDNAconcBinaryReef(post = NULL, x, size, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"manta_from_eDNAconc_binary_reef"} (e.g. \code{readRDS("path/to/manta_from_eDNAconc_binary_reef.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"manta_from_eDNAconc_binary_reef"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("manta_from_eDNAconc_binary_reef")}).}
 
 \item{x}{Numeric vector of predictor values (edna_conc_rate_reef = integer_conc_reef/n_assays_reef (eDNA concentration per assay)).}
 
@@ -27,6 +27,7 @@ presence rate). Predictor: edna_conc_rate_reef =
 integer_conc_reef/n_assays_reef (eDNA concentration per assay). Binomial
 regression (successes out of trials), logit link, no offset; predictor
 enters as log(x + eps) with eps = 0.01. No group-level random effect;
-predictions are population-level. Prediction intervals use a representative
-trial count (see pi_size).
+includes an observation-level reef effect, so the prediction interval is
+for a new reef (mean and credible interval are for an average reef).
+Prediction intervals use a representative trial count (see pi_size).
 }

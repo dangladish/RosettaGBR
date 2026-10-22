@@ -1,5 +1,26 @@
 # RosettaGBR Changelog
 
+## 0.2.0 -- bundled posteriors, standalone package
+
+- The posterior draws for all 52 BR-04 models are now bundled in
+  `inst/extdata/posteriors/` (about 10 MB). Only the population-level columns
+  needed for prediction are kept (`alpha`/`beta` plus `phi` or `r` where
+  relevant), together with the `link` attribute and, for the reef-level
+  Binomial models, the observation-level reef SD draws. The package no longer
+  depends on any external files.
+- New `rosetta_posterior(model_name)` loads a bundled posterior.
+- Every `pred*From*()` wrapper and `rosetta_predict()` now default to
+  `post = NULL`, which uses the bundled posterior. Passing your own `post`
+  works as before.
+- `predBinomialCurve()` now honours an `obs_re_sd` attribute on the posterior:
+  the prediction interval draws a new reef's observation-level effect, so it
+  reflects between-reef overdispersion. Mean curves and credible intervals are
+  unchanged. This affects the 7 reef-level Binomial models.
+- `data-raw/build_posteriors.R` rebuilds the bundle from a directory of full
+  posterior files.
+- The vignette now uses the bundled posteriors instead of toy draws.
+- Tests cover every bundled posterior and every wrapper.
+
 ## 2026-10-15 -- `predBetaCurve()` made link-aware (loglog support)
 
 `manta_from_surf_{tow,cull,reef}` were switched from a logit to a loglog

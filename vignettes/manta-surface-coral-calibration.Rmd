@@ -18,18 +18,17 @@ knitr::opts_chunk$set(
 
 This vignette walks through a complete prediction workflow for one
 calibration **pair** -- manta tow vs ReefScan Surface coral cover, at the
-tow level -- using the package's three building blocks:
+tow level -- using the package's building blocks:
 
 1. `rosetta_models()` to look up a model's fitting conventions,
-2. a `pred*From*()` wrapper (or the generic `rosetta_predict()`) to turn a
-   posterior-samples matrix into a prediction curve,
-3. plotting the result.
+2. `rosetta_posterior()` to load the posterior draws bundled with the
+   package,
+3. a `pred*From*()` wrapper (or the generic `rosetta_predict()`) to turn
+   those draws into a prediction curve,
+4. plotting the result.
 
-RosettaGBR does not fit models or bundle posteriors (see `?RosettaGBR` /
-the package README) -- every example below starts from a posterior-samples
-matrix you supply. For a self-contained, always-reproducible vignette we
-construct a **toy** posterior that mimics a real fit; the final section
-shows how to swap in a real posterior from your own model fits instead.
+RosettaGBR does not fit models, but it ships the saved posterior draws for
+all 52 BR-04 calibration models, so everything below runs as-is.
 
 ```{r setup}
 library(RosettaGBR)
@@ -38,10 +37,9 @@ library(ggplot2)
 
 ## 1. Look up the model
 
-Every fitted model BR-04 produced is documented in the registry returned
-by `rosetta_models()` -- one row per model, keyed by the same name as its
-saved posterior file (`<model_name>.RDS`). Look up both directions of the
-manta/RS-Surface coral-cover pair:
+Every BR-04 calibration model is documented in the registry returned by
+`rosetta_models()`: one row per model, keyed by the model name. Look up
+both directions of the manta/RS-Surface coral-cover pair:
 
 ```{r}
 rosetta_models() |>
@@ -50,17 +48,15 @@ rosetta_models() |>
 ```
 
 Both directions are `"beta"` family (coral cover is a proportion) at
-`"tow"` level, but as of 2026-10-15 they use *different* links (see the
-registry's own `link` column above): `manta_from_surf_tow` is
-`link = "loglog"` (`mu = exp(-exp(-eta))`) while `surf_from_manta_tow`
-remains `link = "logit"` (`mu = plogis(eta)`), with no offset (coral cover
-models have no effort term, unlike the COTS count models). You don't need
-to branch on this by hand when calling `predBetaCurve()`, though -- it
-reads the link straight off `attr(post, "link")` on whichever posterior
-you pass it (defaulting to `"logit"` when that attribute is absent, so
-every pre-existing posterior is unaffected), so the same function call
-works for every Beta coral model regardless of which link it was fit
-with. This tells us what each model's `x`/response actually are:
+`"tow"` level, but they use *different* links (see the registry's `link`
+column above): `manta_from_surf_tow` is `link = "loglog"`
+(`mu = exp(-exp(-eta))`) while `surf_from_manta_tow` is `link = "logit"`
+(`mu = plogis(eta)`), with no offset (coral cover models have no effort
+term, unlike the COTS count models). You don't need to branch on this by
+hand: `predBetaCurve()` reads the link from `attr(post, "link")` on the
+posterior (defaulting to `"logit"` when that attribute is absent), so the
+same call works for every Beta coral model. This tells us what each
+model's `x` and response are:
 
 - **`manta_from_surf_tow`**: predicts manta tow `perc_hard` (response)
   from RS Surface `pct_HC_surf` (predictor).
@@ -69,51 +65,45 @@ with. This tells us what each model's `x`/response actually are:
 
 Fitting a *separate* model per direction (rather than algebraically
 inverting one fit) is deliberate: a Beta-regression fit of Y-on-X is not
-the exact inverse of a fit of X-on-Y, so BR-04 fits and saves both
-directions independently.
+the exact inverse of a fit of X-on-Y, so both directions were fit
+independently.
 
-## 2. Obtain a posterior-samples matrix
+## 2. Load the posterior
 
-Every `pred*From*()` function expects a matrix (or data frame) with one
-row per posterior draw and, for a Beta-family model, columns `alpha`,
-`beta`, `phi` -- this is the same contract
-[RosettaCOTS](https://github.com/Scott-Foster/RosettaCOTS) uses, and
-exactly what the BR-04 model fits were saved as (one `.RDS` file per model,
-named `<model_name>.RDS`).
-
-For this vignette we build a **toy** posterior with roughly the shape a
-real fit might have (don't read anything into the specific numbers --
-see Section 5 for how to load the real one):
+Each model's posterior draws are bundled with the package and returned by
+`rosetta_posterior()`: a numeric matrix with one row per posterior draw
+and, for a Beta-family model, columns `alpha`, `beta` and `phi` (this is the
+same contract [RosettaCOTS](https://github.com/Scott-Foster/RosettaCOTS)
+uses).
 
 ```{r}
-set.seed(4821)
-post <- cbind(
-  alpha = rnorm(4000, mean = -1.1, sd = 0.15),
-  beta  = rnorm(4000, mean = 2.3,  sd = 0.20),
-  phi   = rgamma(4000, shape = 12, rate = 1)
-)
+post <- rosetta_posterior("manta_from_surf_tow")
+dim(post)
 head(post)
+attr(post, "link")
 ```
+
+The `"link"` attribute (not a column) is how the prediction functions know
+to use the loglog inverse link for this particular model.
 
 ## 3. Predict a calibration curve
 
 Call the wrapper function named after the model (`manta_from_surf_tow` ->
-`predMantaFromSurfTow()` -- see `?rosetta_models` / the README for the
-naming convention), supplying the posterior and a grid of predictor
-values:
+`predMantaFromSurfTow()`), supplying a grid of predictor values. With no
+`post` argument the bundled posterior is used:
 
 ```{r}
 x_seq <- seq(0, 1, length.out = 100)
-pred_manta <- predMantaFromSurfTow(post, x = x_seq)
+pred_manta <- predMantaFromSurfTow(x = x_seq)
 pred_manta
 ```
 
 The returned tibble has one row per `x` and five prediction columns:
 
-- **`mean`** -- posterior mean of the fitted curve (population-level,
+- **`mean`**: posterior mean of the fitted curve (population-level,
   group/random effects marginalized to zero).
-- **`lo95`/`hi95`** -- 95% credible interval on that mean curve.
-- **`pi_lo95`/`pi_hi95`** -- 95% *prediction* interval for a single new
+- **`lo95`/`hi95`**: 95% credible interval on that mean curve.
+- **`pi_lo95`/`pi_hi95`**: 95% *prediction* interval for a single new
   observation at that `x` (always at least as wide as the credible
   interval -- see `?predBetaCurve` for why this is enforced).
 
@@ -121,23 +111,20 @@ Equivalently, via the generic dispatcher (useful when looping over many
 models by name rather than calling named functions one at a time):
 
 ```{r}
-pred_manta2 <- rosetta_predict("manta_from_surf_tow", post, x = x_seq)
-all.equal(pred_manta$mean, pred_manta2$mean)
+pred_manta2 <- rosetta_predict("manta_from_surf_tow", x = x_seq)
+all.equal(pred_manta$mean, pred_manta2$mean, tolerance = 0.01)
 ```
+
+(The two agree to Monte Carlo noise only: each call independently
+subsamples the posterior for the prediction-interval simulation.)
 
 ## 4. Plot the calibration curve
 
 ```{r}
-set.seed(99)
-obs_x <- runif(60)
-obs_mu <- plogis(-1.1 + 2.3 * obs_x)
-obs <- data.frame(x = obs_x, y = rbeta(60, obs_mu * 10, (1 - obs_mu) * 10))
-
 ggplot(pred_manta, aes(x, mean)) +
   geom_ribbon(aes(ymin = pi_lo95, ymax = pi_hi95), fill = "grey70", alpha = 0.4) +
   geom_ribbon(aes(ymin = lo95, ymax = hi95), fill = "steelblue", alpha = 0.5) +
   geom_line(linewidth = 1) +
-  geom_point(data = obs, aes(x, y), inherit.aes = FALSE, shape = 1, alpha = 0.6) +
   labs(
     x = "RS Surface % hard coral (predictor)",
     y = "Manta tow % hard coral (predicted)",
@@ -147,26 +134,14 @@ ggplot(pred_manta, aes(x, mean)) +
   theme_minimal()
 ```
 
-(`obs` above is simulated to roughly match the toy posterior, purely to
-illustrate how you'd overlay real tow-level observations -- see Section 5
-for the real data source.)
-
 ## 5. The other direction of the pair
 
 The reverse-direction model, `surf_from_manta_tow`, has an *independent*
-posterior (its own `alpha`/`beta`/`phi`) and predicts the opposite way --
-RS Surface cover as a function of manta cover. Using a second toy
-posterior (again, do not compare these specific numbers to the first --
-they're just illustrative):
+posterior (its own `alpha`/`beta`/`phi`) and predicts the opposite way: RS
+Surface cover as a function of manta cover.
 
 ```{r}
-set.seed(777)
-post_rev <- cbind(
-  alpha = rnorm(4000, mean = -0.9, sd = 0.18),
-  beta  = rnorm(4000, mean = 1.9,  sd = 0.25),
-  phi   = rgamma(4000, shape = 10, rate = 1)
-)
-pred_surf <- predSurfFromMantaTow(post_rev, x = x_seq)
+pred_surf <- predSurfFromMantaTow(x = x_seq)
 
 ggplot(pred_surf, aes(x, mean)) +
   geom_ribbon(aes(ymin = pi_lo95, ymax = pi_hi95), fill = "grey70", alpha = 0.4) +
@@ -180,44 +155,23 @@ ggplot(pred_surf, aes(x, mean)) +
   theme_minimal()
 ```
 
-## 6. Using a real BR-04 posterior and real observations
+## 6. Using your own posterior
 
-The above uses toy posteriors so this vignette builds standalone, with no
-dependency on files outside the package. If you have the saved BR-04
-posterior and the corresponding tow-level data, swap them in instead:
+Every wrapper also accepts a `post` argument, so you can supply posterior
+draws from your own fit of the same model. It must be a matrix (or data
+frame) with columns `alpha`, `beta` and `phi`, and optionally a `"link"`
+attribute:
 
 ```{r, eval = FALSE}
-# Not evaluated when this vignette is built, since the package itself
-# doesn't bundle this data. Adjust paths to wherever your files live.
-post_real <- readRDS("path/to/manta_from_surf_tow.RDS")
-tow_level <- readRDS("path/to/tow_level.RDS")
-
-pred_real <- predMantaFromSurfTow(post_real, x = seq(0, 1, length.out = 100))
-
-obs_real <- tow_level[!is.na(tow_level$pct_HC_surf) & !is.na(tow_level$perc_hard), ]
-
-ggplot(pred_real, aes(x, mean)) +
-  geom_ribbon(aes(ymin = pi_lo95, ymax = pi_hi95), fill = "grey70", alpha = 0.4) +
-  geom_ribbon(aes(ymin = lo95, ymax = hi95), fill = "steelblue", alpha = 0.5) +
-  geom_line(linewidth = 1) +
-  geom_point(data = obs_real, aes(pct_HC_surf, perc_hard), inherit.aes = FALSE, shape = 1, alpha = 0.4) +
-  labs(x = "RS Surface % hard coral", y = "Manta tow % hard coral") +
-  theme_minimal()
+my_post <- readRDS("path/to/my_posterior.RDS")
+predMantaFromSurfTow(my_post, x = x_seq)
 ```
-
-Note the real posterior matrix has extra columns beyond `alpha`/`beta`/
-`phi` (per-reef random-effect draws, brms's internal `Intercept`/`lprior`/
-`lp__`) -- every `pred*From*()` function selects columns by name, so these
-extra columns are ignored automatically. `manta_from_surf_tow.RDS`
-specifically also carries a `"link" = "loglog"` *attribute* (not a column)
-on the saved matrix -- `attributes(post_real)` will show it -- which is
-how `predMantaFromSurfTow()`/`predBetaCurve()` know to use the loglog
-inverse link for this particular model without you passing anything extra.
 
 ## See also
 
 - `?rosetta_models` for the full 52-model registry and its columns
   (family, level, offset/eps conventions, grouping, etc.).
+- `?rosetta_posterior` for what each bundled posterior contains.
 - `?predBetaCurve` / `?predNegBinCurve` / `?predBinomialCurve` for the
   three underlying prediction engines, including how prediction intervals
   are constructed for the two COTS families (which this coral-cover

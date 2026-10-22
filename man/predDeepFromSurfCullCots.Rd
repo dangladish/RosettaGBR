@@ -4,10 +4,10 @@
 \alias{predDeepFromSurfCullCots}
 \title{Predict rs_deep (y_deep (RS Deep raw COTS count)) from rs_surface, cull-site level}
 \usage{
-predDeepFromSurfCullCots(post, x, offset = 0, n_draws = 2000)
+predDeepFromSurfCullCots(post = NULL, x, offset = 0, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"deep_from_surf_cull_cots"} (e.g. \code{readRDS("path/to/deep_from_surf_cull_cots.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"deep_from_surf_cull_cots"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("deep_from_surf_cull_cots")}).}
 
 \item{x}{Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).}
 

@@ -9,8 +9,8 @@
 # which does the actual family dispatch -- the wrapper's only job is to (a)
 # give the model a RosettaCOTS-style discoverable name and (b) default the
 # `eps`/`link`/`size` arguments to the values this exact model was fit with,
-# so a caller only ever has to supply `post` (their own posterior matrix)
-# and `x` (and `offset`/`size` for models where that's a genuinely
+# so a caller only ever has to supply `x` (the bundled posterior is used
+# unless `post` is given) (and `offset`/`size` for models where that's a genuinely
 # data-dependent, representative-effort choice -- see each function's docs).
 
 library(dplyr)
@@ -41,29 +41,33 @@ gen_one <- function(r) {
   )
 
   if (r$family == "beta") {
-    body <- "  predBetaCurve(post, x, n_draws = n_draws)"
-    sig <- "function(post, x, n_draws = 2000)"
+    body <- paste0(
+      "  if (is.null(post)) post <- rosetta_posterior(\"", r$model_name, "\")\n",
+      "  predBetaCurve(post, x, n_draws = n_draws)"
+    )
+    sig <- "function(post = NULL, x, n_draws = 2000)"
     extra_param_doc <- ""
   } else if (r$family == "negbin") {
     body <- sprintf(
-      "  predNegBinCurve(post, x, offset = offset, eps = %s, n_draws = n_draws)",
-      r$eps
+      "  if (is.null(post)) post <- rosetta_posterior(\"%s\")\n  predNegBinCurve(post, x, offset = offset, eps = %s, n_draws = n_draws)",
+      r$model_name, r$eps
     )
-    sig <- "function(post, x, offset = 0, n_draws = 2000)"
+    sig <- "function(post = NULL, x, offset = 0, n_draws = 2000)"
     extra_param_doc <- "#' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).\n"
   } else if (r$family == "binomial" && isTRUE(r$has_offset)) {
     body <- sprintf(
-      "  predBinomialCurve(post, x, offset = offset, eps = %s, link = \"%s\", size = 1, n_draws = n_draws)",
-      r$eps, r$link
+      "  if (is.null(post)) post <- rosetta_posterior(\"%s\")\n  predBinomialCurve(post, x, offset = offset, eps = %s, link = \"%s\", size = 1, n_draws = n_draws)",
+      r$model_name, r$eps, r$link
     )
-    sig <- "function(post, x, offset = 0, n_draws = 2000)"
+    sig <- "function(post = NULL, x, offset = 0, n_draws = 2000)"
     extra_param_doc <- "#' @param offset Log-effort offset (already centered into this model's alpha at fit time -- pass the RAW log(effort) for a new prediction, e.g. `log(tow_distance_m)`; see Details).\n"
   } else { # binomial, no offset, trials()-based
     body <- paste0(
+      "  if (is.null(post)) post <- rosetta_posterior(\"", r$model_name, "\")\n",
       "  if (missing(size)) stop(\"", size_required_msg, "\", call. = FALSE)\n",
       sprintf("  predBinomialCurve(post, x, offset = NULL, eps = %s, link = \"%s\", size = size, n_draws = n_draws)", r$eps, r$link)
     )
-    sig <- "function(post, x, size, n_draws = 2000)"
+    sig <- "function(post = NULL, x, size, n_draws = 2000)"
     extra_param_doc <- "#' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.\n"
   }
 
@@ -73,7 +77,7 @@ gen_one <- function(r) {
     "#' @details\n",
     "#'   {wrap_text(details)}\n",
     "#'\n",
-    "#' @param post Posterior-samples matrix for `\"{r$model_name}\"` (e.g. `readRDS(\"path/to/{r$model_name}.RDS\")`).\n",
+    "#' @param post Posterior-samples matrix for `\"{r$model_name}\"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior(\"{r$model_name}\")`).\n",
     "#' @param x Numeric vector of predictor values ({r$predictor_variable}).\n",
     "{extra_param_doc}",
     "#' @param n_draws Number of posterior draws to use. Default 2000.\n",

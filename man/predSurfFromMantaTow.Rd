@@ -4,10 +4,10 @@
 \alias{predSurfFromMantaTow}
 \title{Predict rs_surface (pct_HC_surf) from manta, tow level}
 \usage{
-predSurfFromMantaTow(post, x, n_draws = 2000)
+predSurfFromMantaTow(post = NULL, x, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"surf_from_manta_tow"} (e.g. \code{readRDS("path/to/surf_from_manta_tow.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"surf_from_manta_tow"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("surf_from_manta_tow")}).}
 
 \item{x}{Numeric vector of predictor values (perc_hard).}
 

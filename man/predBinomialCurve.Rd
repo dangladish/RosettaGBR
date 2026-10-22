@@ -55,4 +55,11 @@ mathematically correct, not a bug. For cull-site/reef rate models, pass a
 representative trial count via \code{size} (e.g. the median \code{n_tows} backing
 one row); see that model's entry in \code{\link[=rosetta_models]{rosetta_models()}} (\code{pi_size} column)
 for the convention used when the model was fit/plotted.
+
+If the posterior carries an \code{"obs_re_sd"} attribute (naming a column of
+observation-level reef standard deviation draws, as the reef-level
+Binomial models do), the prediction interval additionally draws a new
+reef's effect from \code{N(0, sd)} for each posterior draw before the Binomial
+draw, so that it reflects between-reef overdispersion. The mean curve and
+credible interval are unaffected (average reef).
 }

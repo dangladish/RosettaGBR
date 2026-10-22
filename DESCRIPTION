@@ -1,6 +1,6 @@
 Package: RosettaGBR
 Title: Cross-Method Prediction for GBR Coral Cover and COTS Monitoring Data
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("CCIP", "BR-04 Team", role = c("aut", "cre"), email = "placeholder@example.com")
 Description: Prediction functions for calibration models relating different
     Great Barrier Reef monitoring methods (manta tow, ReefScan Surface,
@@ -12,13 +12,11 @@ Description: Prediction functions for calibration models relating different
     model set built for CCIP BR-04 (project RJFMP), and re-exports
     'RosettaCOTS's own (otherwise internal/unexported) D-02 per-model
     functions under stable names alongside them (see 'rosetta_models()').
-    The BR-04 functions take a posterior-samples matrix (from the saved
-    BR-04 model fits, columns alpha/beta/phi for Beta
-    models or alpha/beta/r for Negative Binomial models, population-level
-    only) and a vector of predictor values, and return posterior
-    mean/credible-interval/prediction-interval curves; this package does not
-    fit models or bundle data for them -- it is a prediction/
-    calibration-curve layer only. The D-02 functions are thin pass-throughs
+    The BR-04 functions use the posterior draws of each fitted model (bundled
+    with the package, population-level terms only; a user-supplied posterior
+    matrix may be passed instead) and a vector of predictor values, and return
+    posterior mean/credible-interval/prediction-interval curves; this package
+    does not fit models -- it is a prediction/calibration-curve layer only. The D-02 functions are thin pass-throughs
     to 'RosettaCOTS', which does bundle its own fitted posteriors.
 License: MIT + file LICENSE
 Encoding: UTF-8

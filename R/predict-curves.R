@@ -126,6 +126,13 @@ predNegBinCurve <- function(post, x, offset = 0, eps = 0.01, n_draws = 2000) {
 #' one row); see that model's entry in [rosetta_models()] (`pi_size` column)
 #' for the convention used when the model was fit/plotted.
 #'
+#' If the posterior carries an `"obs_re_sd"` attribute (naming a column of
+#' observation-level reef standard deviation draws, as the reef-level
+#' Binomial models do), the prediction interval additionally draws a new
+#' reef's effect from `N(0, sd)` for each posterior draw before the Binomial
+#' draw, so that it reflects between-reef overdispersion. The mean curve and
+#' credible interval are unaffected (average reef).
+#'
 #' @inheritParams predNegBinCurve
 #' @param offset Scalar log-effort offset, or `NULL` (default) for models fit
 #'   with no separate offset term (i.e. exposure captured via `size`/
@@ -147,13 +154,20 @@ predBinomialCurve <- function(post, x, offset = NULL, eps = 0.01,
   idx <- sample_draws(length(alpha), n_draws)
   x_lin <- log(x + eps)
   linv <- function(lp) if (link == "cloglog") 1 - exp(-exp(lp)) else stats::plogis(lp)
-  mu <- sapply(x_lin, function(xi) {
-    lp <- alpha[idx] + beta[idx] * xi
-    if (!is.null(offset)) lp <- lp + offset
-    linv(lp)
+  lp <- sapply(x_lin, function(xi) {
+    l <- alpha[idx] + beta[idx] * xi
+    if (!is.null(offset)) l <- l + offset
+    l
   })
-  mu <- matrix(mu, nrow = length(idx))
-  y_pred <- matrix(stats::rbinom(length(mu), size = size, prob = mu), nrow = nrow(mu)) / size
+  lp <- matrix(lp, nrow = length(idx))
+  mu <- linv(lp)
+  # Observation-level reef effect: when the posterior carries one, the
+  # prediction interval is for a NEW reef (one effect draw per posterior
+  # draw, shared across x); the mean curve and credible interval stay at the
+  # average reef.
+  obs_sd <- obs_re_sd_draws(post)
+  lp_new <- if (is.null(obs_sd)) lp else lp + stats::rnorm(length(idx), 0, obs_sd[idx])
+  y_pred <- matrix(stats::rbinom(length(mu), size = size, prob = linv(lp_new)), nrow = nrow(mu)) / size
   lo95 <- apply(mu, 2, stats::quantile, 0.025); hi95 <- apply(mu, 2, stats::quantile, 0.975)
   pi_lo95 <- apply(y_pred, 2, stats::quantile, 0.025); pi_hi95 <- apply(y_pred, 2, stats::quantile, 0.975)
   pi_lo95 <- pmin(pi_lo95, lo95); pi_hi95 <- pmax(pi_hi95, hi95)

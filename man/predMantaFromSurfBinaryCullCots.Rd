@@ -4,10 +4,10 @@
 \alias{predMantaFromSurfBinaryCullCots}
 \title{Predict manta (manta_combined successes out of n_tows trials) from rs_surface, cull-site level}
 \usage{
-predMantaFromSurfBinaryCullCots(post, x, size, n_draws = 2000)
+predMantaFromSurfBinaryCullCots(post = NULL, x, size, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"manta_from_surf_binary_cull_cots"} (e.g. \code{readRDS("path/to/manta_from_surf_binary_cull_cots.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"manta_from_surf_binary_cull_cots"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("manta_from_surf_binary_cull_cots")}).}
 
 \item{x}{Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).}
 

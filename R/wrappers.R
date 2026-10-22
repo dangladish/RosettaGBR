@@ -11,13 +11,14 @@
 #'   beta * x). Identity-scale predictor (no log transform). Includes a
 #'   reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_tow"` (e.g. `readRDS("path/to/manta_from_deep_tow.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_tow"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_tow")`).
 #' @param x Numeric vector of predictor values (pct_HC_deep (RS Deep pct hard coral)).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepTow <- function(post, x, n_draws = 2000) {
+predMantaFromDeepTow <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_tow")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_deep (pct_HC_deep (RS Deep pct hard coral)) from manta, tow level
@@ -28,13 +29,14 @@ predMantaFromDeepTow <- function(post, x, n_draws = 2000) {
 #'   beta * x). Identity-scale predictor (no log transform). Includes a
 #'   reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"deep_from_manta_tow"` (e.g. `readRDS("path/to/deep_from_manta_tow.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_manta_tow"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_manta_tow")`).
 #' @param x Numeric vector of predictor values (perc_hard (manta pct hard coral)).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromMantaTow <- function(post, x, n_draws = 2000) {
+predDeepFromMantaTow <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_manta_tow")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict manta (perc_hard) from rs_deep, cull-site level
@@ -45,13 +47,14 @@ predDeepFromMantaTow <- function(post, x, n_draws = 2000) {
 #'   transform). No group-level random effect; predictions are population-level.
 #'   Exploratory: small sample (few reefs or tows); interpret with caution.
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_cull"` (e.g. `readRDS("path/to/manta_from_deep_cull.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_cull"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_cull")`).
 #' @param x Numeric vector of predictor values (pct_HC_deep).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepCull <- function(post, x, n_draws = 2000) {
+predMantaFromDeepCull <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_cull")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_deep (pct_HC_deep) from manta, cull-site level
@@ -62,13 +65,14 @@ predMantaFromDeepCull <- function(post, x, n_draws = 2000) {
 #'   transform). No group-level random effect; predictions are population-level.
 #'   Exploratory: small sample (few reefs or tows); interpret with caution.
 #'
-#' @param post Posterior-samples matrix for `"deep_from_manta_cull"` (e.g. `readRDS("path/to/deep_from_manta_cull.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_manta_cull"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_manta_cull")`).
 #' @param x Numeric vector of predictor values (perc_hard).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromMantaCull <- function(post, x, n_draws = 2000) {
+predDeepFromMantaCull <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_manta_cull")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict manta (mean_HC_manta) from rs_deep, reef level
@@ -78,13 +82,14 @@ predDeepFromMantaCull <- function(post, x, n_draws = 2000) {
 #'   logit link: mu = plogis(alpha + beta * x). Identity-scale predictor (no log
 #'   transform). No group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_reef"` (e.g. `readRDS("path/to/manta_from_deep_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_reef")`).
 #' @param x Numeric vector of predictor values (mean_HC_deep).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepReef <- function(post, x, n_draws = 2000) {
+predMantaFromDeepReef <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_reef")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_deep (mean_HC_deep) from manta, reef level
@@ -94,13 +99,14 @@ predMantaFromDeepReef <- function(post, x, n_draws = 2000) {
 #'   logit link: mu = plogis(alpha + beta * x). Identity-scale predictor (no log
 #'   transform). No group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"deep_from_manta_reef"` (e.g. `readRDS("path/to/deep_from_manta_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_manta_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_manta_reef")`).
 #' @param x Numeric vector of predictor values (mean_HC_manta).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromMantaReef <- function(post, x, n_draws = 2000) {
+predDeepFromMantaReef <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_manta_reef")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict manta (perc_hard) from rs_surface, tow level
@@ -112,13 +118,14 @@ predDeepFromMantaReef <- function(post, x, n_draws = 2000) {
 #'   inverse link instead of plogis. Identity-scale predictor. Includes a
 #'   reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_tow"` (e.g. `readRDS("path/to/manta_from_surf_tow.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_tow"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_tow")`).
 #' @param x Numeric vector of predictor values (pct_HC_surf).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfTow <- function(post, x, n_draws = 2000) {
+predMantaFromSurfTow <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_tow")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_surface (pct_HC_surf) from manta, tow level
@@ -129,13 +136,14 @@ predMantaFromSurfTow <- function(post, x, n_draws = 2000) {
 #'   transform). Includes a reef-level random effect (marginalised to zero for
 #'   prediction).
 #'
-#' @param post Posterior-samples matrix for `"surf_from_manta_tow"` (e.g. `readRDS("path/to/surf_from_manta_tow.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_manta_tow"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_manta_tow")`).
 #' @param x Numeric vector of predictor values (perc_hard).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromMantaTow <- function(post, x, n_draws = 2000) {
+predSurfFromMantaTow <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_manta_tow")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict manta (perc_hard) from rs_surface, cull-site level
@@ -147,13 +155,14 @@ predSurfFromMantaTow <- function(post, x, n_draws = 2000) {
 #'   inverse link instead of plogis. Identity-scale predictor. Includes a
 #'   reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_cull"` (e.g. `readRDS("path/to/manta_from_surf_cull.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_cull"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_cull")`).
 #' @param x Numeric vector of predictor values (pct_HC_surf).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfCull <- function(post, x, n_draws = 2000) {
+predMantaFromSurfCull <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_cull")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_surface (pct_HC_surf) from manta, cull-site level
@@ -164,13 +173,14 @@ predMantaFromSurfCull <- function(post, x, n_draws = 2000) {
 #'   transform). Includes a reef-level random effect (marginalised to zero for
 #'   prediction).
 #'
-#' @param post Posterior-samples matrix for `"surf_from_manta_cull"` (e.g. `readRDS("path/to/surf_from_manta_cull.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_manta_cull"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_manta_cull")`).
 #' @param x Numeric vector of predictor values (perc_hard).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromMantaCull <- function(post, x, n_draws = 2000) {
+predSurfFromMantaCull <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_manta_cull")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict manta (mean_HC_manta) from rs_surface, reef level
@@ -182,13 +192,14 @@ predSurfFromMantaCull <- function(post, x, n_draws = 2000) {
 #'   this inverse link instead of plogis. Identity-scale predictor. No
 #'   group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_reef"` (e.g. `readRDS("path/to/manta_from_surf_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_reef")`).
 #' @param x Numeric vector of predictor values (mean_HC_surf).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfReef <- function(post, x, n_draws = 2000) {
+predMantaFromSurfReef <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_reef")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_surface (mean_HC_surf) from manta, reef level
@@ -198,13 +209,14 @@ predMantaFromSurfReef <- function(post, x, n_draws = 2000) {
 #'   logit link: mu = plogis(alpha + beta * x). Identity-scale predictor (no log
 #'   transform). No group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_manta_reef"` (e.g. `readRDS("path/to/surf_from_manta_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_manta_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_manta_reef")`).
 #' @param x Numeric vector of predictor values (mean_HC_manta).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromMantaReef <- function(post, x, n_draws = 2000) {
+predSurfFromMantaReef <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_manta_reef")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_surface (pct_HC_surf) from rs_deep, tow level
@@ -215,13 +227,14 @@ predSurfFromMantaReef <- function(post, x, n_draws = 2000) {
 #'   transform). Includes a reef-level random effect (marginalised to zero for
 #'   prediction).
 #'
-#' @param post Posterior-samples matrix for `"surf_from_deep_tow"` (e.g. `readRDS("path/to/surf_from_deep_tow.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_deep_tow"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_deep_tow")`).
 #' @param x Numeric vector of predictor values (pct_HC_deep).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromDeepTow <- function(post, x, n_draws = 2000) {
+predSurfFromDeepTow <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_deep_tow")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_deep (pct_HC_deep) from rs_surface, tow level
@@ -232,13 +245,14 @@ predSurfFromDeepTow <- function(post, x, n_draws = 2000) {
 #'   transform). Includes a reef-level random effect (marginalised to zero for
 #'   prediction).
 #'
-#' @param post Posterior-samples matrix for `"deep_from_surf_tow"` (e.g. `readRDS("path/to/deep_from_surf_tow.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_surf_tow"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_surf_tow")`).
 #' @param x Numeric vector of predictor values (pct_HC_surf).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromSurfTow <- function(post, x, n_draws = 2000) {
+predDeepFromSurfTow <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_surf_tow")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_surface (pct_HC_surf) from rs_deep, cull-site level
@@ -249,13 +263,14 @@ predDeepFromSurfTow <- function(post, x, n_draws = 2000) {
 #'   transform). No group-level random effect; predictions are population-level.
 #'   Exploratory: small sample (few reefs or tows); interpret with caution.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_deep_cull"` (e.g. `readRDS("path/to/surf_from_deep_cull.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_deep_cull"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_deep_cull")`).
 #' @param x Numeric vector of predictor values (pct_HC_deep).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromDeepCull <- function(post, x, n_draws = 2000) {
+predSurfFromDeepCull <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_deep_cull")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_deep (pct_HC_deep) from rs_surface, cull-site level
@@ -266,13 +281,14 @@ predSurfFromDeepCull <- function(post, x, n_draws = 2000) {
 #'   transform). No group-level random effect; predictions are population-level.
 #'   Exploratory: small sample (few reefs or tows); interpret with caution.
 #'
-#' @param post Posterior-samples matrix for `"deep_from_surf_cull"` (e.g. `readRDS("path/to/deep_from_surf_cull.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_surf_cull"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_surf_cull")`).
 #' @param x Numeric vector of predictor values (pct_HC_surf).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromSurfCull <- function(post, x, n_draws = 2000) {
+predDeepFromSurfCull <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_surf_cull")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_surface (mean_HC_surf) from rs_deep, reef level
@@ -282,13 +298,14 @@ predDeepFromSurfCull <- function(post, x, n_draws = 2000) {
 #'   logit link: mu = plogis(alpha + beta * x). Identity-scale predictor (no log
 #'   transform). No group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_deep_reef"` (e.g. `readRDS("path/to/surf_from_deep_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_deep_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_deep_reef")`).
 #' @param x Numeric vector of predictor values (mean_HC_deep).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromDeepReef <- function(post, x, n_draws = 2000) {
+predSurfFromDeepReef <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_deep_reef")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict rs_deep (mean_HC_deep) from rs_surface, reef level
@@ -298,13 +315,14 @@ predSurfFromDeepReef <- function(post, x, n_draws = 2000) {
 #'   logit link: mu = plogis(alpha + beta * x). Identity-scale predictor (no log
 #'   transform). No group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"deep_from_surf_reef"` (e.g. `readRDS("path/to/deep_from_surf_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_surf_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_surf_reef")`).
 #' @param x Numeric vector of predictor values (mean_HC_surf).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromSurfReef <- function(post, x, n_draws = 2000) {
+predDeepFromSurfReef <- function(post = NULL, x, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_surf_reef")
   predBetaCurve(post, x, n_draws = n_draws)
 }
 #' Predict manta (manta_combined (count of tows at this cull site with scar present OR at least 1 COTS observed)) from rs_deep, cull-site level
@@ -316,14 +334,15 @@ predDeepFromSurfReef <- function(post, x, n_draws = 2000) {
 #'   offset = log(n_tows); predictor enters as log(x + eps) with eps = 0.0001.
 #'   Includes a reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_combined_cull_cots"` (e.g. `readRDS("path/to/manta_from_deep_combined_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_combined_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_combined_cull_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep (COTS per tow)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepCombinedCullCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromDeepCombinedCullCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_combined_cull_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined successes out of n_tows trials (combined COTS+scar presence rate)) from rs_deep, cull-site level
@@ -336,14 +355,15 @@ predMantaFromDeepCombinedCullCots <- function(post, x, offset = 0, n_draws = 200
 #'   effect (marginalised to zero for prediction). Prediction intervals use a
 #'   representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_binary_cull_cots"` (e.g. `readRDS("path/to/manta_from_deep_binary_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_binary_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_binary_cull_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepBinaryCullCots <- function(post, x, size, n_draws = 2000) {
+predMantaFromDeepBinaryCullCots <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_binary_cull_cots")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 1e-04, link = "logit", size = size, n_draws = n_draws)
 }
@@ -356,14 +376,15 @@ predMantaFromDeepBinaryCullCots <- function(post, x, size, n_draws = 2000) {
 #'   log(effort_deep); predictor enters as log(x + eps) with eps = 0.0001.
 #'   Includes a reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"deep_from_manta_cull_cots"` (e.g. `readRDS("path/to/deep_from_manta_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_manta_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_manta_cull_cots")`).
 #' @param x Numeric vector of predictor values (manta combined density = (y_manta+feeding_scars)/effort_manta (COTS count + scar count SUMMED, per tow)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromMantaCullCots <- function(post, x, offset = 0, n_draws = 2000) {
+predDeepFromMantaCullCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_manta_cull_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined (reef count of tows with scar present OR at least 1 COTS observed)) from rs_deep, reef level
@@ -375,14 +396,15 @@ predDeepFromMantaCullCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   log(x + eps) with eps = 0.0001. No group-level random effect; predictions
 #'   are population-level.
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_combined_reef_cots"` (e.g. `readRDS("path/to/manta_from_deep_combined_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_combined_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_combined_reef_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepCombinedReefCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromDeepCombinedReefCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_combined_reef_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined successes out of n_tows trials) from rs_deep, reef level
@@ -391,17 +413,20 @@ predMantaFromDeepCombinedReefCots <- function(post, x, offset = 0, n_draws = 200
 #'   Response: manta_combined successes out of n_tows trials. Predictor: RS Deep
 #'   density = y_deep/effort_deep. Binomial regression (successes out of
 #'   trials), logit link, no offset; predictor enters as log(x + eps) with eps =
-#'   0.0001. No group-level random effect; predictions are population-level.
-#'   Prediction intervals use a representative trial count (see pi_size).
+#'   0.0001. No group-level random effect; includes an observation-level reef
+#'   effect, so the prediction interval is for a new reef (mean and credible
+#'   interval are for an average reef). Prediction intervals use a
+#'   representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_binary_reef_cots"` (e.g. `readRDS("path/to/manta_from_deep_binary_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_binary_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_binary_reef_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepBinaryReefCots <- function(post, x, size, n_draws = 2000) {
+predMantaFromDeepBinaryReefCots <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_binary_reef_cots")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 1e-04, link = "logit", size = size, n_draws = n_draws)
 }
@@ -414,14 +439,15 @@ predMantaFromDeepBinaryReefCots <- function(post, x, size, n_draws = 2000) {
 #'   + eps) with eps = 0.0001. No group-level random effect; predictions are
 #'   population-level.
 #'
-#' @param post Posterior-samples matrix for `"deep_from_manta_reef_cots"` (e.g. `readRDS("path/to/deep_from_manta_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_manta_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_manta_reef_cots")`).
 #' @param x Numeric vector of predictor values (manta combined density = (y_manta+feeding_scars)/effort_manta).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromMantaReefCots <- function(post, x, offset = 0, n_draws = 2000) {
+predDeepFromMantaReefCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_manta_reef_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (has_manta = scar_present==1 OR cots_observed>0 (manta scar-or-COTS presence, Binomial n=1)) from rs_deep, tow level
@@ -437,14 +463,15 @@ predDeepFromMantaReefCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   (marginalised to zero for prediction). Exploratory: small sample (few reefs
 #'   or tows); interpret with caution.
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_tow_cots"` (e.g. `readRDS("path/to/manta_from_deep_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_tow_cots")`).
 #' @param x Numeric vector of predictor values (deep_density = cots_reefscan_deep (RS Deep per-tow count, effort_deep=1)).
 #' @param offset Log-effort offset (already centered into this model's alpha at fit time -- pass the RAW log(effort) for a new prediction, e.g. `log(tow_distance_m)`; see Details).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromDeepTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_tow_cots")
   predBinomialCurve(post, x, offset = offset, eps = 1e-04, link = "cloglog", size = 1, n_draws = n_draws)
 }
 #' Predict manta (manta_combined_tow = y_manta + has_scar (manta per-tow COTS count plus scar presence, SUMMED)) from rs_deep, tow level
@@ -457,14 +484,15 @@ predMantaFromDeepTowCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   + eps) with eps = 0.0001. Includes a reef-level random effect (marginalised
 #'   to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_deep_combined_tow_cots"` (e.g. `readRDS("path/to/manta_from_deep_combined_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_deep_combined_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_deep_combined_tow_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep (effort_deep=1 at tow level)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromDeepCombinedTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromDeepCombinedTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_deep_combined_tow_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict rs_deep (y_deep = cots_reefscan_deep (RS Deep raw per-tow COTS count)) from manta, tow level
@@ -477,14 +505,15 @@ predMantaFromDeepCombinedTowCots <- function(post, x, offset = 0, n_draws = 2000
 #'   = 0.0001. Includes a reef-level random effect (marginalised to zero for
 #'   prediction).
 #'
-#' @param post Posterior-samples matrix for `"deep_from_manta_tow_cots"` (e.g. `readRDS("path/to/deep_from_manta_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_manta_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_manta_tow_cots")`).
 #' @param x Numeric vector of predictor values (manta_combined_tow/effort_manta_tow (effort_manta_tow=1, i.e. COTS-per-tow; SUM not OR convention)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromMantaTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predDeepFromMantaTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_manta_tow_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined (count of tows with scar present OR at least 1 COTS observed at cull site)) from rs_surface, cull-site level
@@ -496,14 +525,15 @@ predDeepFromMantaTowCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   log(n_tows); predictor enters as log(x + eps) with eps = 0.0001. Includes a
 #'   reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_combined_cull_cots"` (e.g. `readRDS("path/to/manta_from_surf_combined_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_combined_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_combined_cull_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfCombinedCullCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromSurfCombinedCullCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_combined_cull_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined successes out of n_tows trials) from rs_surface, cull-site level
@@ -516,14 +546,15 @@ predMantaFromSurfCombinedCullCots <- function(post, x, offset = 0, n_draws = 200
 #'   prediction). Prediction intervals use a representative trial count (see
 #'   pi_size).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_binary_cull_cots"` (e.g. `readRDS("path/to/manta_from_surf_binary_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_binary_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_binary_cull_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfBinaryCullCots <- function(post, x, size, n_draws = 2000) {
+predMantaFromSurfBinaryCullCots <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_binary_cull_cots")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 1e-04, link = "logit", size = size, n_draws = n_draws)
 }
@@ -536,14 +567,15 @@ predMantaFromSurfBinaryCullCots <- function(post, x, size, n_draws = 2000) {
 #'   + eps) with eps = 0.0001. Includes a reef-level random effect (marginalised
 #'   to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"surf_from_manta_cull_cots"` (e.g. `readRDS("path/to/surf_from_manta_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_manta_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_manta_cull_cots")`).
 #' @param x Numeric vector of predictor values (manta combined density = (y_manta+feeding_scars)/effort_manta).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromMantaCullCots <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromMantaCullCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_manta_cull_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined (reef count of tows with scar present OR at least 1 COTS observed)) from rs_surface, reef level
@@ -555,14 +587,15 @@ predSurfFromMantaCullCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   enters as log(x + eps) with eps = 0.0001. No group-level random effect;
 #'   predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_combined_reef_cots"` (e.g. `readRDS("path/to/manta_from_surf_combined_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_combined_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_combined_reef_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfCombinedReefCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromSurfCombinedReefCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_combined_reef_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined successes out of n_tows trials) from rs_surface, reef level
@@ -571,17 +604,20 @@ predMantaFromSurfCombinedReefCots <- function(post, x, offset = 0, n_draws = 200
 #'   Response: manta_combined successes out of n_tows trials. Predictor: RS
 #'   Surface density = y_surf/effort_surf. Binomial regression (successes out of
 #'   trials), logit link, no offset; predictor enters as log(x + eps) with eps =
-#'   0.0001. No group-level random effect; predictions are population-level.
-#'   Prediction intervals use a representative trial count (see pi_size).
+#'   0.0001. No group-level random effect; includes an observation-level reef
+#'   effect, so the prediction interval is for a new reef (mean and credible
+#'   interval are for an average reef). Prediction intervals use a
+#'   representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_binary_reef_cots"` (e.g. `readRDS("path/to/manta_from_surf_binary_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_binary_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_binary_reef_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfBinaryReefCots <- function(post, x, size, n_draws = 2000) {
+predMantaFromSurfBinaryReefCots <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_binary_reef_cots")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 1e-04, link = "logit", size = size, n_draws = n_draws)
 }
@@ -594,14 +630,15 @@ predMantaFromSurfBinaryReefCots <- function(post, x, size, n_draws = 2000) {
 #'   + eps) with eps = 0.0001. No group-level random effect; predictions are
 #'   population-level.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_manta_reef_cots"` (e.g. `readRDS("path/to/surf_from_manta_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_manta_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_manta_reef_cots")`).
 #' @param x Numeric vector of predictor values (manta combined density = (y_manta+feeding_scars)/effort_manta).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromMantaReefCots <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromMantaReefCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_manta_reef_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (has_manta = scar_present==1 OR cots_observed>0 (Binomial n=1)) from rs_surface, tow level
@@ -615,14 +652,15 @@ predSurfFromMantaReefCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   Predictor enters as log(x + eps) with eps = 0.0001. Includes a reef-level
 #'   random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_tow_cots"` (e.g. `readRDS("path/to/manta_from_surf_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_tow_cots")`).
 #' @param x Numeric vector of predictor values (surf_density = cots_reefscan_surface (RS Surface per-tow count, effort_surf=1)).
 #' @param offset Log-effort offset (already centered into this model's alpha at fit time -- pass the RAW log(effort) for a new prediction, e.g. `log(tow_distance_m)`; see Details).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromSurfTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_tow_cots")
   predBinomialCurve(post, x, offset = offset, eps = 1e-04, link = "cloglog", size = 1, n_draws = n_draws)
 }
 #' Predict rs_surface (y_surf = cots_reefscan_surface (RS Surface raw per-tow COTS count)) from manta, tow level
@@ -635,14 +673,15 @@ predMantaFromSurfTowCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   eps = 0.0001. Includes a reef-level random effect (marginalised to zero for
 #'   prediction).
 #'
-#' @param post Posterior-samples matrix for `"surf_from_manta_tow_cots"` (e.g. `readRDS("path/to/surf_from_manta_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_manta_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_manta_tow_cots")`).
 #' @param x Numeric vector of predictor values (manta_combined_tow/effort_manta_tow (effort_manta_tow=1; manta_combined_tow=y_manta+has_scar, SUM)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromMantaTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromMantaTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_manta_tow_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict manta (manta_combined_tow = y_manta + has_scar (manta per-tow COTS count plus scar presence, SUMMED)) from rs_surface, tow level
@@ -655,14 +694,15 @@ predSurfFromMantaTowCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   0.0001. Includes a reef-level random effect (marginalised to zero for
 #'   prediction).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_surf_combined_tow_cots"` (e.g. `readRDS("path/to/manta_from_surf_combined_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_surf_combined_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_surf_combined_tow_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf (effort_surf=1)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromSurfCombinedTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predMantaFromSurfCombinedTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_surf_combined_tow_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict rs_surface (y_surf (RS Surface raw COTS count)) from rs_deep, cull-site level
@@ -673,14 +713,15 @@ predMantaFromSurfCombinedTowCots <- function(post, x, offset = 0, n_draws = 2000
 #'   log(effort_surf); predictor enters as log(x + eps) with eps = 0.0001.
 #'   Includes a reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"surf_from_deep_cull_cots"` (e.g. `readRDS("path/to/surf_from_deep_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_deep_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_deep_cull_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromDeepCullCots <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromDeepCullCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_deep_cull_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict rs_deep (y_deep (RS Deep raw COTS count)) from rs_surface, cull-site level
@@ -691,14 +732,15 @@ predSurfFromDeepCullCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   log(effort_deep); predictor enters as log(x + eps) with eps = 0.0001.
 #'   Includes a reef-level random effect (marginalised to zero for prediction).
 #'
-#' @param post Posterior-samples matrix for `"deep_from_surf_cull_cots"` (e.g. `readRDS("path/to/deep_from_surf_cull_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_surf_cull_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_surf_cull_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromSurfCullCots <- function(post, x, offset = 0, n_draws = 2000) {
+predDeepFromSurfCullCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_surf_cull_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict rs_surface (y_surf (RS Surface raw COTS count)) from rs_deep, reef level
@@ -709,14 +751,15 @@ predDeepFromSurfCullCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   log(effort_surf); predictor enters as log(x + eps) with eps = 0.0001. No
 #'   group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_deep_reef_cots"` (e.g. `readRDS("path/to/surf_from_deep_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_deep_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_deep_reef_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromDeepReefCots <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromDeepReefCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_deep_reef_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict rs_deep (y_deep (RS Deep raw COTS count)) from rs_surface, reef level
@@ -727,14 +770,15 @@ predSurfFromDeepReefCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   log(effort_deep); predictor enters as log(x + eps) with eps = 0.0001. No
 #'   group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"deep_from_surf_reef_cots"` (e.g. `readRDS("path/to/deep_from_surf_reef_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_surf_reef_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_surf_reef_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromSurfReefCots <- function(post, x, offset = 0, n_draws = 2000) {
+predDeepFromSurfReefCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_surf_reef_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict rs_surface (y_surf (RS Surface raw per-tow COTS count)) from rs_deep, tow level
@@ -747,14 +791,15 @@ predDeepFromSurfReefCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   prediction). Exploratory: small sample (few reefs or tows); interpret with
 #'   caution.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_deep_tow_cots"` (e.g. `readRDS("path/to/surf_from_deep_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_deep_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_deep_tow_cots")`).
 #' @param x Numeric vector of predictor values (RS Deep density = y_deep/effort_deep (effort_deep=1)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromDeepTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromDeepTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_deep_tow_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict rs_deep (y_deep (RS Deep raw per-tow COTS count)) from rs_surface, tow level
@@ -767,14 +812,15 @@ predSurfFromDeepTowCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   prediction). Exploratory: small sample (few reefs or tows); interpret with
 #'   caution.
 #'
-#' @param post Posterior-samples matrix for `"deep_from_surf_tow_cots"` (e.g. `readRDS("path/to/deep_from_surf_tow_cots.RDS")`).
+#' @param post Posterior-samples matrix for `"deep_from_surf_tow_cots"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("deep_from_surf_tow_cots")`).
 #' @param x Numeric vector of predictor values (RS Surface density = y_surf/effort_surf (effort_surf=1)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predDeepFromSurfTowCots <- function(post, x, offset = 0, n_draws = 2000) {
+predDeepFromSurfTowCots <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("deep_from_surf_tow_cots")
   predNegBinCurve(post, x, offset = offset, eps = 1e-04, n_draws = n_draws)
 }
 #' Predict edna_conc (integer_conc_reef (reef-summed PCR eDNA concentration, D-02-literal: sum of sample tech-rep sums across all reef samples, rounded)) from manta, reef level
@@ -788,14 +834,15 @@ predDeepFromSurfTowCots <- function(post, x, offset = 0, n_draws = 2000) {
 #'   log(n_assays_reef); predictor enters as log(x + eps) with eps = 0.01. No
 #'   group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"eDNAconc_from_manta_reef"` (e.g. `readRDS("path/to/eDNAconc_from_manta_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"eDNAconc_from_manta_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("eDNAconc_from_manta_reef")`).
 #' @param x Numeric vector of predictor values (manta_density_raw = (cots_observed+feeding_scars)/n_tows (manta combined count per tow, no x68 rescale)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predEDNAconcFromMantaReef <- function(post, x, offset = 0, n_draws = 2000) {
+predEDNAconcFromMantaReef <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("eDNAconc_from_manta_reef")
   predNegBinCurve(post, x, offset = offset, eps = 0.01, n_draws = n_draws)
 }
 #' Predict manta (manta_combined successes out of n_tows trials (combined COTS+scar presence rate)) from edna_conc, reef level
@@ -806,17 +853,19 @@ predEDNAconcFromMantaReef <- function(post, x, offset = 0, n_draws = 2000) {
 #'   integer_conc_reef/n_assays_reef (eDNA concentration per assay). Binomial
 #'   regression (successes out of trials), logit link, no offset; predictor
 #'   enters as log(x + eps) with eps = 0.01. No group-level random effect;
-#'   predictions are population-level. Prediction intervals use a representative
-#'   trial count (see pi_size).
+#'   includes an observation-level reef effect, so the prediction interval is
+#'   for a new reef (mean and credible interval are for an average reef).
+#'   Prediction intervals use a representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_eDNAconc_binary_reef"` (e.g. `readRDS("path/to/manta_from_eDNAconc_binary_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_eDNAconc_binary_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_eDNAconc_binary_reef")`).
 #' @param x Numeric vector of predictor values (edna_conc_rate_reef = integer_conc_reef/n_assays_reef (eDNA concentration per assay)).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromEDNAconcBinaryReef <- function(post, x, size, n_draws = 2000) {
+predMantaFromEDNAconcBinaryReef <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_eDNAconc_binary_reef")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 0.01, link = "logit", size = size, n_draws = n_draws)
 }
@@ -827,17 +876,19 @@ predMantaFromEDNAconcBinaryReef <- function(post, x, size, n_draws = 2000) {
 #'   Predictor: edna_conc_rate_reef (eDNA concentration per assay). Binomial
 #'   regression (successes out of trials), logit link, no offset; predictor
 #'   enters as log(x + eps) with eps = 0.01. No group-level random effect;
-#'   predictions are population-level. Prediction intervals use a representative
-#'   trial count (see pi_size).
+#'   includes an observation-level reef effect, so the prediction interval is
+#'   for a new reef (mean and credible interval are for an average reef).
+#'   Prediction intervals use a representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"eDNAprop_from_eDNAconc_reef"` (e.g. `readRDS("path/to/eDNAprop_from_eDNAconc_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"eDNAprop_from_eDNAconc_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("eDNAprop_from_eDNAconc_reef")`).
 #' @param x Numeric vector of predictor values (edna_conc_rate_reef (eDNA concentration per assay)).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predEDNApropFromEDNAconcReef <- function(post, x, size, n_draws = 2000) {
+predEDNApropFromEDNAconcReef <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("eDNAprop_from_eDNAconc_reef")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 0.01, link = "logit", size = size, n_draws = n_draws)
 }
@@ -850,14 +901,15 @@ predEDNApropFromEDNAconcReef <- function(post, x, size, n_draws = 2000) {
 #'   enters as log(x + eps) with eps = 0.01. No group-level random effect;
 #'   predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"eDNAconc_from_eDNAprop_reef"` (e.g. `readRDS("path/to/eDNAconc_from_eDNAprop_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"eDNAconc_from_eDNAprop_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("eDNAconc_from_eDNAprop_reef")`).
 #' @param x Numeric vector of predictor values (edna_prop_reef = n_success/n_trials (eDNA proportion positive)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predEDNAconcFromEDNApropReef <- function(post, x, offset = 0, n_draws = 2000) {
+predEDNAconcFromEDNApropReef <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("eDNAconc_from_eDNAprop_reef")
   predNegBinCurve(post, x, offset = offset, eps = 0.01, n_draws = n_draws)
 }
 #' Predict edna_conc (integer_conc_reef (reef-summed eDNA concentration)) from rs_surface, reef level
@@ -869,14 +921,15 @@ predEDNAconcFromEDNApropReef <- function(post, x, offset = 0, n_draws = 2000) {
 #'   predictor enters as log(x + eps) with eps = 0.01. No group-level random
 #'   effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"eDNAconc_from_surf_reef"` (e.g. `readRDS("path/to/eDNAconc_from_surf_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"eDNAconc_from_surf_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("eDNAconc_from_surf_reef")`).
 #' @param x Numeric vector of predictor values (surf_density = cots_reefscan_surface/n_tows (RS Surface COTS per tow)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predEDNAconcFromSurfReef <- function(post, x, offset = 0, n_draws = 2000) {
+predEDNAconcFromSurfReef <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("eDNAconc_from_surf_reef")
   predNegBinCurve(post, x, offset = offset, eps = 0.01, n_draws = n_draws)
 }
 #' Predict rs_surface (cots_reefscan_surface (RS Surface raw COTS count)) from edna_conc, reef level
@@ -888,14 +941,15 @@ predEDNAconcFromSurfReef <- function(post, x, offset = 0, n_draws = 2000) {
 #'   + eps) with eps = 0.01. No group-level random effect; predictions are
 #'   population-level.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_eDNAconc_reef"` (e.g. `readRDS("path/to/surf_from_eDNAconc_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_eDNAconc_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_eDNAconc_reef")`).
 #' @param x Numeric vector of predictor values (edna_conc_rate_reef (eDNA concentration per assay)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromEDNAconcReef <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromEDNAconcReef <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_eDNAconc_reef")
   predNegBinCurve(post, x, offset = offset, eps = 0.01, n_draws = n_draws)
 }
 #' Predict edna_prop (n_success/n_trials (reef-pooled positive-sample fraction)) from manta, reef level
@@ -905,17 +959,19 @@ predSurfFromEDNAconcReef <- function(post, x, offset = 0, n_draws = 2000) {
 #'   Predictor: manta_density_raw = (cots_observed+feeding_scars)/n_tows.
 #'   Binomial regression (successes out of trials), logit link, no offset;
 #'   predictor enters as log(x + eps) with eps = 0.01. No group-level random
-#'   effect; predictions are population-level. Prediction intervals use a
-#'   representative trial count (see pi_size).
+#'   effect; includes an observation-level reef effect, so the prediction
+#'   interval is for a new reef (mean and credible interval are for an average
+#'   reef). Prediction intervals use a representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"eDNAprop_from_manta_reef"` (e.g. `readRDS("path/to/eDNAprop_from_manta_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"eDNAprop_from_manta_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("eDNAprop_from_manta_reef")`).
 #' @param x Numeric vector of predictor values (manta_density_raw = (cots_observed+feeding_scars)/n_tows).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predEDNApropFromMantaReef <- function(post, x, size, n_draws = 2000) {
+predEDNApropFromMantaReef <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("eDNAprop_from_manta_reef")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 0.01, link = "logit", size = size, n_draws = n_draws)
 }
@@ -925,18 +981,20 @@ predEDNApropFromMantaReef <- function(post, x, size, n_draws = 2000) {
 #'   Response: manta_combined successes out of n_tows trials. Predictor:
 #'   edna_prop_reef (eDNA proportion positive). Binomial regression (successes
 #'   out of trials), logit link, no offset; predictor enters as log(x + eps)
-#'   with eps = 0.01. No group-level random effect; predictions are
-#'   population-level. Prediction intervals use a representative trial count
-#'   (see pi_size).
+#'   with eps = 0.01. No group-level random effect; includes an
+#'   observation-level reef effect, so the prediction interval is for a new reef
+#'   (mean and credible interval are for an average reef). Prediction intervals
+#'   use a representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"manta_from_eDNAprop_binary_reef"` (e.g. `readRDS("path/to/manta_from_eDNAprop_binary_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"manta_from_eDNAprop_binary_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("manta_from_eDNAprop_binary_reef")`).
 #' @param x Numeric vector of predictor values (edna_prop_reef (eDNA proportion positive)).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predMantaFromEDNApropBinaryReef <- function(post, x, size, n_draws = 2000) {
+predMantaFromEDNApropBinaryReef <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("manta_from_eDNAprop_binary_reef")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 0.01, link = "logit", size = size, n_draws = n_draws)
 }
@@ -946,18 +1004,20 @@ predMantaFromEDNApropBinaryReef <- function(post, x, size, n_draws = 2000) {
 #'   Response: n_success/n_trials (reef-pooled positive-sample fraction).
 #'   Predictor: surf_density = cots_reefscan_surface/n_tows. Binomial regression
 #'   (successes out of trials), logit link, no offset; predictor enters as log(x
-#'   + eps) with eps = 0.0001. No group-level random effect; predictions are
-#'   population-level. Prediction intervals use a representative trial count
-#'   (see pi_size).
+#'   + eps) with eps = 0.0001. No group-level random effect; includes an
+#'   observation-level reef effect, so the prediction interval is for a new reef
+#'   (mean and credible interval are for an average reef). Prediction intervals
+#'   use a representative trial count (see pi_size).
 #'
-#' @param post Posterior-samples matrix for `"eDNAprop_from_surf_reef"` (e.g. `readRDS("path/to/eDNAprop_from_surf_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"eDNAprop_from_surf_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("eDNAprop_from_surf_reef")`).
 #' @param x Numeric vector of predictor values (surf_density = cots_reefscan_surface/n_tows).
 #' @param size Representative trial count for this model's prediction interval (see Details / rosetta_models()$pi_size). Required, no default.
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predEDNApropFromSurfReef <- function(post, x, size, n_draws = 2000) {
+predEDNApropFromSurfReef <- function(post = NULL, x, size, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("eDNAprop_from_surf_reef")
   if (missing(size)) stop("`size` is required for this model: a representative trial count (e.g. median n_tows backing one row -- see rosetta_models()'s pi_size column).", call. = FALSE)
   predBinomialCurve(post, x, offset = NULL, eps = 1e-04, link = "logit", size = size, n_draws = n_draws)
 }
@@ -969,13 +1029,14 @@ predEDNApropFromSurfReef <- function(post, x, size, n_draws = 2000) {
 #'   log link, offset = log(effort_surf); predictor enters as log(x + eps) with
 #'   eps = 0.01. No group-level random effect; predictions are population-level.
 #'
-#' @param post Posterior-samples matrix for `"surf_from_eDNAprop_reef"` (e.g. `readRDS("path/to/surf_from_eDNAprop_reef.RDS")`).
+#' @param post Posterior-samples matrix for `"surf_from_eDNAprop_reef"`. Default `NULL` uses the posterior bundled with the package (`rosetta_posterior("surf_from_eDNAprop_reef")`).
 #' @param x Numeric vector of predictor values (edna_prop_reef (eDNA proportion positive)).
 #' @param offset Log-effort offset (see Details for which method's effort this model's offset was fit against).
 #' @param n_draws Number of posterior draws to use. Default 2000.
 #'
 #' @return A tibble as described in [predBetaCurve()] / [predNegBinCurve()] / [predBinomialCurve()].
 #' @export
-predSurfFromEDNApropReef <- function(post, x, offset = 0, n_draws = 2000) {
+predSurfFromEDNApropReef <- function(post = NULL, x, offset = 0, n_draws = 2000) {
+  if (is.null(post)) post <- rosetta_posterior("surf_from_eDNAprop_reef")
   predNegBinCurve(post, x, offset = offset, eps = 0.01, n_draws = n_draws)
 }

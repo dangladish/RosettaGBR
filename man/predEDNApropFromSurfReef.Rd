@@ -4,10 +4,10 @@
 \alias{predEDNApropFromSurfReef}
 \title{Predict edna_prop (n_success/n_trials (reef-pooled positive-sample fraction)) from rs_surface, reef level}
 \usage{
-predEDNApropFromSurfReef(post, x, size, n_draws = 2000)
+predEDNApropFromSurfReef(post = NULL, x, size, n_draws = 2000)
 }
 \arguments{
-\item{post}{Posterior-samples matrix for \code{"eDNAprop_from_surf_reef"} (e.g. \code{readRDS("path/to/eDNAprop_from_surf_reef.RDS")}).}
+\item{post}{Posterior-samples matrix for \code{"eDNAprop_from_surf_reef"}. Default \code{NULL} uses the posterior bundled with the package (\code{rosetta_posterior("eDNAprop_from_surf_reef")}).}
 
 \item{x}{Numeric vector of predictor values (surf_density = cots_reefscan_surface/n_tows).}
 
@@ -26,8 +26,9 @@ Response: n_success/n_trials (reef-pooled positive-sample fraction).
 Predictor: surf_density = cots_reefscan_surface/n_tows. Binomial regression
 (successes out of trials), logit link, no offset; predictor enters as log(x
 \itemize{
-\item eps) with eps = 0.0001. No group-level random effect; predictions are
-population-level. Prediction intervals use a representative trial count
-(see pi_size).
+\item eps) with eps = 0.0001. No group-level random effect; includes an
+observation-level reef effect, so the prediction interval is for a new reef
+(mean and credible interval are for an average reef). Prediction intervals
+use a representative trial count (see pi_size).
 }
 }
