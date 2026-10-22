@@ -7,9 +7,11 @@ RosettaGBR is an R package that provides the results of a calibration
 exercise between different methods for measuring Crown-of-Thorns
 Starfish (COTS) and coral cover on the Great Barrier Reef (GBR). Its
 main function `GBR_calibrate` is a tool that predicts one measure from
-another, along with confidence and prediction intervals. RosettaGBR is
-built upon data obtained during 2025/2026 Reef Joint Field Management
-Program (RJFMP) trips, and extends
+another, along with confidence and prediction intervals. Two further
+functions help with analysing the results: `GBR_curve` returns the whole
+calibration curve for a pair of tools, and `GBR_posterior` returns the
+fitted posterior draws. RosettaGBR is built upon data obtained during
+2025/2026 Reef Joint Field Management Program (RJFMP) trips, and extends
 [RosettaCOTS](https://github.com/Scott-Foster/RosettaCOTS), which
 presents the site-level calibration models from the CCIP D-02 field
 trip. Where RosettaCOTS works at the site level, RosettaGBR works at
@@ -216,6 +218,119 @@ is the tool being predicted, the prediction is the total concentration
 over `to.effort` assays (default 48). For `eDNA_prop` it is a proportion
 of `to.effort` samples (default 24). Both exist at reef level only.
 
+## Calibration curves
+
+`GBR_curve` returns the whole calibration curve for a pair of tools
+rather than predictions for particular observations: the expected value
+of the `to` tool over a grid of values of the `from` tool, with
+confidence and prediction intervals. It uses the same tool names,
+levels, `to.type`, `to.nTows` and `to.effort` as `GBR_calibrate`. The
+result is an ordinary data frame, ready for `ggplot2` or any other
+plotting tool, and it has a `plot` method that draws the mean, the
+confidence band and the prediction band. The mean line is dashed where
+the curve is an extrapolation beyond the range of the predictor in the
+BR-04 data (the `observed` column).
+
+``` r
+set.seed(2931)
+par(mfrow = c(1, 2))
+
+# How manta tow coral cover relates to ReefScan Surface cover, by reef
+cover_curve <- GBR_curve(from = "coral_surface", to = "coral_manta", level = "reef")
+plot(cover_curve)
+
+# Chance that a manta tow finds COTS or scars, as ReefScan Surface density rises
+cots_curve <- GBR_curve(from = "ReefScan_surface", to = "Manta", level = "tow")
+#> Predictions are made using 188.6 metre tows (median of the BR-04 data).
+plot(cots_curve)
+```
+
+![](README_files/figure-gfm/curve-1.png)<!-- -->
+
+``` r
+head(cots_curve)
+#>             x        mean      lowerCI     upperCI lowerPI     upperPI observed
+#> 1 0.000000000 0.003232692 0.0008312731 0.008715772       0 0.008715772     TRUE
+#> 2 0.001122334 0.011113177 0.0042192303 0.022502677       0 0.022502677     TRUE
+#> 3 0.004489338 0.021721790 0.0094431926 0.039684184       0 0.039684184     TRUE
+#> 4 0.010101010 0.032696769 0.0146152247 0.057407952       0 1.000000000     TRUE
+#> 5 0.017957351 0.043838563 0.0195946727 0.075850394       0 1.000000000     TRUE
+#> 6 0.028058361 0.055078719 0.0247881502 0.095141864       0 1.000000000     TRUE
+```
+
+The axis labels are kept with the curve, so the scale of `x` and of the
+prediction is always recorded.
+
+``` r
+attr(cots_curve, "xlab")
+#> [1] "ReefScan_surface density (COTS per tow)"
+attr(cots_curve, "ylab")
+#> [1] "Probability a tow has a scar or COTS"
+```
+
+You can give your own grid of predictor values with `x`, and the `x`
+scale is the one the models were fitted on: a proportion for coral cover
+and `eDNA_prop`, COTS per tow for the ReefScan tools, the combined
+density for `Manta` (COTS seen plus tows with scars, per tow), and the
+concentration per assay for `eDNA_conc`. Overlaying your own
+observations is then a matter of adding points to the plot.
+
+## Posterior draws
+
+`GBR_posterior` returns the fitted posterior draws behind a pair of
+tools, as an ordinary data frame with one row per draw. No Bayesian
+software is needed to use them. The draws are for the average reef
+(group effects are set to zero).
+
+``` r
+draws <- GBR_posterior(from = "coral_surface", to = "coral_manta", level = "reef")
+head(draws)
+#>        alpha     beta      phi
+#> 1 -0.7148631 2.285596 36.08983
+#> 2 -0.5553514 1.543406 21.92564
+#> 3 -0.8206184 2.714107 25.74112
+#> 4 -0.9710413 3.311695 20.27698
+#> 5 -0.4935571 1.277098 30.22880
+#> 6 -0.5977761 1.710061 20.87790
+```
+
+The `model_info` attribute says which model it is and how the parameters
+combine:
+
+``` r
+attr(draws, "model_info")$equation
+#> [1] "Beta regression, loglog link. mean = exp(-exp(-eta)) with eta = alpha + beta * x; x = ReefScan_surface hard coral cover (proportion). Response ~ Beta(mean * phi, (1 - mean) * phi), so phi is the precision. Group effects (reef) are set to zero."
+```
+
+A one-row-per-parameter summary is available with `summary = TRUE`:
+
+``` r
+GBR_posterior(from = "Manta", to = "ReefScan_surface", level = "reef", summary = TRUE)
+#>   parameter       mean        sd        q2.5        q50     q97.5
+#> 1     alpha -1.0888677 1.1646544 -2.77296452 -1.2583890 1.7072765
+#> 2      beta  1.1741258 0.3749211  0.53376349  1.1470541 1.9822017
+#> 3         r  0.2738394 0.2093011  0.05694921  0.2185941 0.8364702
+```
+
+and the draws can be used for your own calculations. For example, the
+posterior distribution of manta tow coral cover when ReefScan Surface
+cover is 30%:
+
+``` r
+info <- attr(draws, "model_info")
+eta <- draws$alpha + draws$beta * 0.3
+mu <- if (info$link == "loglog") exp(-exp(-eta)) else plogis(eta)
+quantile(mu, c(0.025, 0.5, 0.975))
+#>      2.5%       50%     97.5% 
+#> 0.3009403 0.3458816 0.3943262
+```
+
+The parameters are `alpha` and `beta` for every model, plus `phi` (Beta
+precision, coral cover models), `r` (Negative Binomial size, COTS count
+models), and `obs_re_sd` (the standard deviation of an observation-level
+reef effect, reef-level presence models). See `?GBR_posterior` for
+details.
+
 ### Intervals and randomness
 
 The confidence and prediction intervals are 95% unless `intLevel` says
@@ -225,8 +340,8 @@ reproducible numbers. Some pairs involving ReefScan Deep rest on very
 few reefs; `GBR_calibrate` prints a message when such a model is used,
 and these should be treated as exploratory.
 
-See `?GBR_calibrate` for the full list of arguments and the units each
-tool expects.
+See `?GBR_calibrate`, `?GBR_curve` and `?GBR_posterior` for the full
+list of arguments and the units each tool expects.
 
 ## Funding
 

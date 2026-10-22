@@ -317,3 +317,80 @@ predictModel <- function(model, post, x, effort, size, intLevel, nDraws = 2000) 
     lowerPI = pi[1, ], upperPI = pi[2, ]
   )
 }
+
+# ---- ranges, labels and model descriptions (used by GBR_curve/GBR_posterior) ----
+
+loadRanges <- function() {
+  path <- system.file("extdata", "predictor_range.csv", package = "RosettaGBR")
+  if (!nzchar(path)) stop("Predictor range table not found; the package may be incorrectly installed.", call. = FALSE)
+  read.csv(path, stringsAsFactors = FALSE)
+}
+
+observedRange <- function(from_key, level) {
+  r <- loadRanges()
+  r <- r[r$tool == from_key & r$level == level, , drop = FALSE]
+  if (nrow(r) != 1L) return(c(NA_real_, NA_real_))
+  c(r$min, r$max)
+}
+
+xLabel <- function(key, level) {
+  per <- if (level == "tow") "per tow" else "per tow, combined over the site"
+  switch(key,
+    manta = paste0("Manta combined density (COTS seen + tows with scars, ", per, ")"),
+    reefscan_surface = paste0("ReefScan_surface density (COTS ", per, ")"),
+    reefscan_deep = paste0("ReefScan_deep density (COTS ", per, ")"),
+    edna_conc = "eDNA concentration per assay",
+    edna_prop = "eDNA proportion of positive samples",
+    coral_manta = "Manta hard coral cover (proportion)",
+    coral_surface = "ReefScan_surface hard coral cover (proportion)",
+    coral_deep = "ReefScan_deep hard coral cover (proportion)"
+  )
+}
+
+yLabel <- function(to_key, model, eff) {
+  if (model$family == "beta") {
+    return(switch(to_key,
+      coral_manta = "Manta hard coral cover (proportion)",
+      coral_surface = "ReefScan_surface hard coral cover (proportion)",
+      coral_deep = "ReefScan_deep hard coral cover (proportion)"))
+  }
+  switch(to_key,
+    manta = if (model$family == "negbin") {
+      paste0("Expected Manta combined count (COTS + scars) over ", eff$value, " tow", if (eff$value != 1) "s")
+    } else if (eff$column == "distance_m") {
+      "Probability a tow has a scar or COTS"
+    } else {
+      paste0("Proportion of ", eff$value, " tows with a scar or COTS")
+    },
+    reefscan_surface = paste0("Expected ReefScan_surface COTS count over ", eff$value, " tow", if (eff$value != 1) "s"),
+    reefscan_deep = paste0("Expected ReefScan_deep COTS count over ", eff$value, " tow", if (eff$value != 1) "s"),
+    edna_conc = paste0("Expected total eDNA concentration over ", eff$value, " assays"),
+    edna_prop = paste0("Proportion of ", eff$value, " samples that are positive")
+  )
+}
+
+describeModel <- function(model, from_key, level, post) {
+  x_txt <- paste0("x = ", xLabel(from_key, level))
+  inv <- function(link) switch(link,
+    logit = "plogis(eta) = 1 / (1 + exp(-eta))",
+    loglog = "exp(-exp(-eta))",
+    cloglog = "1 - exp(-exp(eta))",
+    log = "exp(eta)")
+  if (model$family == "beta") {
+    link <- attr(post, "link"); if (is.null(link)) link <- "logit"
+    paste0("Beta regression, ", link, " link. mean = ", inv(link), " with eta = alpha + beta * x; ",
+           x_txt, ". Response ~ Beta(mean * phi, (1 - mean) * phi), so phi is the precision. ",
+           "Group effects (reef) are set to zero.")
+  } else if (model$family == "negbin") {
+    paste0("Negative Binomial regression, log link. log(mu) = alpha + beta * log(x + ", model$eps,
+           ") + log(effort); ", x_txt, ". Response ~ NegBin(mu, r), so var = mu + mu^2 / r. ",
+           "Group effects (reef) are set to zero.")
+  } else {
+    obs <- if (!is.null(attr(post, "obs_re_sd"))) {
+      " obs_re_sd is the standard deviation of an observation-level (reef) effect; it only affects prediction intervals, which are for a new reef."
+    } else ""
+    off <- if (isTRUE(model$has_offset)) " + log(effort)" else ""
+    paste0("Binomial regression, ", model$link, " link. eta = alpha + beta * log(x + ", model$eps, ")", off,
+           ", probability = ", inv(model$link), "; ", x_txt, ".", obs, " Group effects (reef) are set to zero.")
+  }
+}

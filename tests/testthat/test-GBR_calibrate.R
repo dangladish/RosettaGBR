@@ -1,8 +1,8 @@
 post_of <- function(m) RosettaGBR:::loadPosterior(m)
 trimmed <- function(v) mean(v, trim = 0.01)
 
-test_that("the package exports a single function", {
-  expect_equal(getNamespaceExports("RosettaGBR"), "GBR_calibrate")
+test_that("the package exports its three functions", {
+  expect_setequal(getNamespaceExports("RosettaGBR"), c("GBR_calibrate", "GBR_curve", "GBR_posterior"))
 })
 
 test_that("every registry model has a complete bundled posterior", {

@@ -1,5 +1,23 @@
 # RosettaGBR Changelog
 
+## 0.4.0 -- `GBR_curve()` and `GBR_posterior()`
+
+- New `GBR_curve(from, to, level, x, nPoints, to.effort, to.nTows, to.type,
+  intLevel)` returns the whole calibration curve for a pair of tools: the
+  mean, confidence band and prediction band over a grid of predictor values,
+  plus an `observed` flag marking where the grid lies within the range of the
+  BR-04 data. It has a base-graphics `plot()` method and carries axis labels
+  as attributes. It uses the same tool names, models and default efforts as
+  `GBR_calibrate()`.
+- New `GBR_posterior(from, to, level, to.type, summary)` returns the bundled
+  posterior draws as a data frame (or a per-parameter summary), with a
+  `model_info` attribute describing the model and how its parameters combine.
+  No Bayesian software is needed.
+- New `inst/extdata/predictor_range.csv`: the observed range of each
+  predictor, by tool and level, used for the default curve grid and the
+  `observed` flag.
+- `DESCRIPTION` now imports graphics and grDevices.
+
 ## 0.3.0 -- redesigned around a single function, `GBR_calibrate()`
 
 The package now follows the structure of RosettaCOTS: one exported function,

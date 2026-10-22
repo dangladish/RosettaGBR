@@ -1,15 +1,16 @@
 Package: RosettaGBR
 Title: Translation Between Methods for Measuring COTS and Coral Cover on the Great Barrier Reef
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: person("CCIP", "BR-04 Team", role = c("aut", "cre"), email = "placeholder@example.com")
 Description: Predicts one Great Barrier Reef monitoring measurement from
-    another, with confidence and prediction intervals, through a single
-    function, GBR_calibrate(). The tools covered are manta tow, ReefScan
-    Surface, ReefScan Deep and eDNA, for coral cover (Beta regression) and
-    Crown-of-Thorns Starfish counts and presence (Negative Binomial and
-    Binomial regression), at tow, cull-site and reef level. Extends
-    'RosettaCOTS' (Foster, github.com/Scott-Foster/RosettaCOTS), which
-    supports the site-level calibration models of CCIP D-02, with the
+    another, with confidence and prediction intervals, through
+    GBR_calibrate(). GBR_curve() returns the full calibration curve for a pair
+    of tools and GBR_posterior() returns the fitted posterior draws. The tools
+    covered are manta tow, ReefScan Surface, ReefScan Deep and eDNA, for coral
+    cover (Beta regression) and Crown-of-Thorns Starfish counts and presence
+    (Negative Binomial and Binomial regression), at tow, cull-site and reef
+    level. Extends 'RosettaCOTS' (Foster, github.com/Scott-Foster/RosettaCOTS),
+    which supports the site-level calibration models of CCIP D-02, with the
     multi-level models built for CCIP BR-04 (project RJFMP). The fitted
     posterior draws are bundled with the package; it does not fit models.
 License: MIT + file LICENSE
@@ -17,6 +18,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
+    graphics,
+    grDevices,
     stats,
     utils
 Suggests:
