@@ -1,116 +1,238 @@
+
 ## RosettaGBR: translation between methods for measuring COTS and coral cover on the Great Barrier Reef
 
 ## Summary
 
-RosettaGBR is an R package that provides prediction functions for a calibration exercise between different methods for measuring Crown-of-Thorns Starfish (COTS) and coral cover on the Great Barrier Reef (GBR). Each function predicts one measure from another, along with credible and prediction intervals. RosettaGBR is built upon data obtained from 2025/2026 Reef Joint Field Management Program (RJFMP) trips, and extends [RosettaCOTS](https://github.com/Scott-Foster/RosettaCOTS), which presents the site-level calibration models from an earlier CCIP field trip (project D-02). It provides 52 pairwise models at three spatial levels (individual manta tow, cull site and reef), and also re-exports RosettaCOTS's own 32 D-02 models under the same naming convention (see "D-02 models" below).
+RosettaGBR is an R package that provides the results of a calibration
+exercise between different methods for measuring Crown-of-Thorns
+Starfish (COTS) and coral cover on the Great Barrier Reef (GBR). Its
+main function `GBR_calibrate` is a tool that predicts one measure from
+another, along with confidence and prediction intervals. RosettaGBR is
+built upon data obtained during 2025/2026 Reef Joint Field Management
+Program (RJFMP) trips, and extends
+[RosettaCOTS](https://github.com/Scott-Foster/RosettaCOTS), which
+presents the site-level calibration models from the CCIP D-02 field
+trip. Where RosettaCOTS works at the site level, RosettaGBR works at
+three spatial levels: the individual manta tow, the cull site and the
+reef. It presents the results of the pair-wise models of the methods
+that measure COTS and of the methods that measure coral cover. The
+fitted models are bundled with the package.
 
 The COTS measurement methods are:
 
-* Manta Tow: scars and COTS counts per tow segment, with tow distance as the measure of effort. Used at tow, cull-site and reef level.
-* ReefScan Surface (Transom): COTS counts detected in images taken from a surface camera system towed behind the vessel. Effort is the number of tows.
-* ReefScan Deep: COTS counts detected in images taken using a different measurement platform. Used at cull-site and reef level (and, exploratorily, tow level).
-* eDNA (concentration): the concentration (quantitative measure) from the PCR assay, summed over all samples at a reef. Used at reef level only.
-* eDNA (proportion): as eDNA (concentration), except that the measure is dichotomous (presence/absence of COTS eDNA in an assay), accumulated to the reef level as a number of positives out of the number of assays.
+- Manta Tow (`Manta`): the number of COTS seen on each tow, and a
+  feeding-scar code for each tow (absent, present or common). Used
+  together, as a combined density of COTS plus tows with scars.
+- ReefScan Surface (`RS_surface`): COTS detected in images taken from a
+  camera system towed behind the vessel (the “Transom”). Effort is the
+  number of tows.
+- ReefScan Deep (`RS_deep`): as ReefScan Surface, except that images
+  were taken using a different measurement platform.
+- eDNA concentration (`eDNA_conc`): the concentration (quantitative
+  measure) from each PCR assay. There is a hierarchy to this sampling:
+  multiple samples at a reef, and replicate assays on each sample.
+- eDNA proportion (`eDNA_prop`): as eDNA concentration, except that the
+  measure is dichotomous (presence/absence of COTS eDNA in a sample).
+  This is accumulated to the reef by taking the proportion of positive
+  samples.
 
 The coral cover measurement methods are:
 
-* Manta Tow: ordinal coral cover categories for each tow, converted to proportion cover.
-* ReefScan Surface (Transom): proportion of classified image points that are hard coral.
-* ReefScan Deep: as ReefScan Surface, except that images were taken using a different measurement platform.
+- Manta Tow (`coral_manta`): an ordinal hard coral cover category for
+  each tow, converted to the category midpoint.
+- ReefScan Surface (`coral_surface`): the proportion of classified image
+  points that are hard coral.
+- ReefScan Deep (`coral_deep`): as ReefScan Surface, except that images
+  were taken using a different measurement platform.
 
-The models are Beta regression (coral cover), Negative Binomial regression (COTS counts) and Binomial regression (COTS presence/absence). Each pair of methods is modelled in both directions, with the other method's measure as the predictor. Details of each model (family, link, offset and predictor transform) are available from `rosetta_models()`. How to use the package is illustrated further below. Note that this README is performing a similar role to that of a vignette for the general workflow; there is also a worked example for the manta tow versus ReefScan Surface coral cover pair.
+The tool names are the values used for the `from` and `to` arguments.
+Predictions can only be made within COTS measurements and within coral
+measurements. The models are Beta regression (coral cover), Negative
+Binomial regression (COTS counts) and Binomial regression (COTS
+presence/absence), with reef included as a random effect where the data
+allow. Every pair is modelled in both directions. How to use the package
+is illustrated further below. Note that this README is performing a
+similar role to that of a vignette (so there is no vignette).
 
 ### Installation
 
-The `RosettaGBR` package can be installed using the `remotes` (or `devtools`) R package.
+The `RosettaGBR` package can be installed using the `remotes` (or
+`devtools`) R package.
 
-```r
+``` r
 install.packages('remotes')
 remotes::install_github(repo = "dangladish/RosettaGBR")
 ```
 
-The D-02 wrappers additionally require `RosettaCOTS` to be installed (a `Suggests`, not an `Imports`, so users of the BR-04 models alone don't need it). It is installed automatically if you ask for suggested packages:
+## Which pairs are available
 
-```r
-remotes::install_github(repo = "dangladish/RosettaGBR", dependencies = TRUE)
-# or directly
-remotes::install_github(repo = "Scott-Foster/RosettaCOTS")
-```
+Every pair of tools exists at reef level. Cull-site and tow level exist
+for the manta tow and ReefScan tools but not for eDNA, which is only
+sampled at the reef. Predicting a manta COTS *count* is possible from
+the ReefScan tools only; predicting manta *presence* is possible from
+every COTS tool.
 
-## Usage
+| from       | to         | levels               |
+|:-----------|:-----------|:---------------------|
+| eDNA_conc  | eDNA_prop  | reef                 |
+| eDNA_conc  | Manta      | reef                 |
+| eDNA_conc  | RS_surface | reef                 |
+| eDNA_prop  | eDNA_conc  | reef                 |
+| eDNA_prop  | Manta      | reef                 |
+| eDNA_prop  | RS_surface | reef                 |
+| Manta      | eDNA_conc  | reef                 |
+| Manta      | eDNA_prop  | reef                 |
+| Manta      | RS_deep    | tow, cull_site, reef |
+| Manta      | RS_surface | tow, cull_site, reef |
+| RS_deep    | Manta      | tow, cull_site, reef |
+| RS_deep    | RS_surface | tow, cull_site, reef |
+| RS_surface | eDNA_conc  | reef                 |
+| RS_surface | eDNA_prop  | reef                 |
+| RS_surface | Manta      | tow, cull_site, reef |
+| RS_surface | RS_deep    | tow, cull_site, reef |
 
-This package does prediction only; it does not fit models. The posterior draws for all 52 BR-04 models are **bundled with the package** (`inst/extdata/posteriors/`, about 10 MB), so every function works out of the box and the package is fully standalone. Each posterior is a numeric matrix with one row per draw and only the population-level columns needed for prediction (`alpha`/`beta`/`phi` for Beta models, `alpha`/`beta`/`r` for Negative Binomial models, `alpha`/`beta` for Binomial models; group effects are marginalised to zero). Load one with `rosetta_posterior("<model_name>")`, or pass your own matrix of the same form via the `post` argument. The 32 D-02 functions need no posterior argument, since RosettaCOTS supplies its own bundled posterior internally.
+COTS pairs and the levels at which they are available.
 
-```r
+The three coral cover tools (`coral_manta`, `coral_surface`,
+`coral_deep`) can each be predicted from either of the other two, at
+tow, cull-site and reef level.
+
+## Using the package
+
+The main function is `GBR_calibrate`. You give it the observations from
+the `from` tool in the units they are normally recorded in, a label for
+the site each observation belongs to, and the tool you want to predict.
+It returns one row per site, with a summary of your input data, the
+effort assumed for the prediction, the predicted value, a confidence
+interval (how far the mean prediction may vary) and a prediction
+interval (how far a new observation may vary). The `level` argument says
+whether observations are tows, or are combined within cull sites or
+reefs.
+
+### Coral cover
+
+Here we predict what manta tow coral cover would be at two reefs, given
+ReefScan Surface cover (proportions) from several tows at each.
+
+``` r
 library(RosettaGBR)
+set.seed(7416)
 
-# See every available model (both BR-04 and D-02) and its conventions
-rosetta_models()
-rosetta_models(source = "br04")  # BR-04 only
-rosetta_models(source = "d02")   # D-02 (RosettaCOTS) only
+surf <- data.frame(
+  reef  = rep(c("reefA", "reefB"), each = 5),
+  cover = c(0.10, 0.15, 0.20, 0.12, 0.18, 0.40, 0.45, 0.35, 0.50, 0.42)
+)
 
-# --- BR-04 models: bundled posteriors are used by default ---
-# Each model has a dedicated wrapper function, derived mechanically from
-# its model name (manta_from_surf_tow -> predMantaFromSurfTow)
-predMantaFromSurfTow(x = seq(0, 1, by = 0.1))
-
-# Inspect a bundled posterior, or pass your own via `post`
-post <- rosetta_posterior("manta_from_surf_tow")
-predMantaFromSurfTow(post, x = seq(0, 1, by = 0.1))
-
-# NegBin / Binomial models that were fit with a log-effort offset require
-# you to supply a representative effort (e.g. mean n_tows, or a specific
-# tow's distance) -- see each function's documentation for which method's
-# effort it expects
-predSurfFromMantaTowCots(x = c(0, 0.5, 1, 2), offset = log(1))
-
-# Binomial cull/reef "rate" models (trials()-based, no offset) require a
-# representative trial count instead
-predMantaFromSurfBinaryReefCots(x = c(0, 0.5, 1), size = 12)
-
-# Programmatic / loop-friendly alternative to the named wrappers
-rosetta_predict("manta_from_surf_tow", x = seq(0, 1, by = 0.1))
-
-# --- D-02 models: no posterior argument needed, RosettaCOTS supplies one ---
-predCullFromManta(manta_scars = c(0, 4, 10), manta.nTows = 4)
+GBR_calibrate(
+  from = "coral_surface", to = "coral_manta", level = "reef",
+  from.metric = surf$cover, sites = surf$reef
+)
+#>    site coral_surface_cover coral_surface_nObs mean_coral_manta lowerCI_coral_manta upperCI_coral_manta lowerPI_coral_manta upperPI_coral_manta
+#> 1 reefA               0.150                  5         0.236890           0.2063297           0.2712871          0.09222477           0.4220530
+#> 2 reefB               0.424                  5         0.436909           0.3571007           0.5190252          0.23456966           0.6367375
 ```
 
-Every BR-04 prediction function returns a tibble with columns `x`, `mean` (posterior mean of the fitted curve), `lo95`/`hi95` (95% credible interval on the mean), and `pi_lo95`/`pi_hi95` (95% prediction interval for a new observation, guaranteed to bracket the credible interval; see `?predNegBinCurve` for why this union is necessary for overdispersed Negative Binomial fits). D-02 functions return whatever data frame shape RosettaCOTS's own internal function returns (see each function's own documentation).
+The manta tow categories can be supplied as they are recorded (`"0"`,
+`"1-"`, `"1+"`, …, `"5+"`) and are converted to their midpoints.
 
-Coral cover models use a logit link, except `manta_from_surf_{tow,cull,reef}`, which use a loglog link. The link travels with the posterior as `attr(post, "link")` (default `"logit"` when absent) and is read by `predBetaCurve()`, so callers never need to specify it.
+### COTS from manta tows
 
-See `vignette("manta-surface-coral-calibration", package = "RosettaGBR")` for a full worked example (registry lookup, prediction, plotting) using the manta tow versus ReefScan Surface coral cover pair.
+Manta tows need the COTS seen on each tow (`from.metric`) and the
+feeding-scar code of each tow (`from.scars`: `"a"`, `"p"` or `"c"`).
+Here we predict the number of COTS that ReefScan Surface would detect
+over 27 tows (the median number of tows at a reef in the BR-04 data, and
+the default) at two reefs.
 
-## Relationship to RosettaCOTS
+``` r
+manta <- data.frame(
+  reef  = rep(c("reefA", "reefB"), each = 6),
+  cots  = c(0, 0, 1, 0, 0, 0, 0, 2, 1, 0, 3, 1),
+  scars = c("a", "a", "p", "a", "a", "a", "p", "p", "p", "a", "c", "p")
+)
 
-[RosettaCOTS](https://github.com/Scott-Foster/RosettaCOTS) supports the D-02 **site-level** pairwise calibration models. Its only *exported* function is a single dispatcher, `RosettaCOTS::COTS_calibrate(from, to, from.metric, ...)`, built on top of 32 **unexported internal** `pred*From*()` functions, each of which reads its own bundled D-02 posterior from RosettaCOTS's installed `extdata/` folder.
+GBR_calibrate(
+  from = "Manta", to = "RS_surface", level = "reef",
+  from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef
+)
+#> Predictions are made using 27 tows (median of the BR-04 data at this level).
+#>    site Manta_COTS Manta_scars Manta_tows Manta_density RS_surface_nTows mean_RS_surface lowerCI_RS_surface upperCI_RS_surface lowerPI_RS_surface upperPI_RS_surface
+#> 1 reefA          1           1          6     0.3333333               27        3.570544          0.6926795            22.0624                  0            24.0250
+#> 2 reefB          7           5          6     2.0000000               27       49.118136          2.7783756           457.3918                  0           457.3918
+```
 
-RosettaGBR's 52 BR-04 models are a **standalone successor**, not a dependency on RosettaCOTS: three spatial levels (tow / cull-site / reef) and three GLM families (Beta, Negative Binomial, Binomial). They follow RosettaCOTS's naming convention (`pred<Response>From<Predictor>...()`) and posterior-matrix contract so the two packages feel like one family, but these 52 functions are RosettaGBR's own code.
+The effort assumed in the prediction can be changed with `to.nTows` (for
+a cull site or reef), so that a prediction for 10 tows is
 
-### D-02 models
+``` r
+GBR_calibrate(
+  from = "Manta", to = "RS_surface", level = "reef",
+  from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef,
+  to.nTows = 10
+)
+#>    site Manta_COTS Manta_scars Manta_tows Manta_density RS_surface_nTows mean_RS_surface lowerCI_RS_surface upperCI_RS_surface lowerPI_RS_surface upperPI_RS_surface
+#> 1 reefA          1           1          6     0.3333333               10        1.257901          0.2614193           7.231467                  0               9.00
+#> 2 reefB          7           5          6     2.0000000               10       18.749274          0.9547399         177.310041                  0             177.31
+```
 
-RosettaGBR also re-exports RosettaCOTS's own 32 D-02 models under the same discoverable naming (e.g. `predMantaFromCull()`, `predCullFromManta()`): thin, signature-preserving pass-throughs to RosettaCOTS's unexported internals (via `getFromNamespace()`), not reimplementations. These are not built on RosettaGBR's own `predBetaCurve()`/`predNegBinCurve()`/`predBinomialCurve()` engine, since each D-02 function does its own bespoke simulation. See `CHANGELOG.md` for details, including an upstream RosettaCOTS issue that was worked around (seven functions declare a default argument, `newDensity`, that does not exist; the wrappers make it a required argument instead).
+### Predicting manta tows
 
-## Package structure
+When the manta tow is the tool being predicted, there are two kinds of
+prediction, chosen by `to.type`. The default, `"presence"`, is the
+probability that a tow has a scar present or at least one COTS seen (at
+cull-site and reef level, the proportion of `to.nTows` tows that do).
+The alternative, `"count"`, is the combined COTS-plus-scar count, and is
+only available from the ReefScan tools. At tow level the effort is the
+tow distance in metres (`to.effort`).
 
-- `R/predict-curves.R`: the three family-specific prediction engines (`predBetaCurve()`, `predNegBinCurve()`, `predBinomialCurve()`). BR-04 models only.
-- `R/predict-dispatch.R`: `rosetta_predict()`, a registry-driven dispatcher used internally by every BR-04 wrapper function (and usable directly).
-- `R/posteriors.R`: `rosetta_posterior()`, which loads a bundled posterior.
-- `R/registry.R`: `rosetta_models()` (merges both registries, with a `source` column) and the internal BR-04 model-name to wrapper-function-name transform.
-- `R/wrappers.R`: BR-04's 52 wrappers, **generated, not hand-written**; see `data-raw/generate_wrappers.R`. Re-run that script (then `devtools::document()`) whenever `inst/extdata/model_registry.csv` changes.
-- `inst/extdata/posteriors/`: the bundled posterior draws, one `<model_name>.RDS` per BR-04 model. Rebuilt from a directory of full posterior files by `data-raw/build_posteriors.R`.
-- `inst/extdata/model_registry.csv`: one row per BR-04 model: family, spatial level, response/predictor method, link function, offset/eps convention, grouping, and the representative trial count used for Binomial prediction intervals.
-- `R/wrappers_d02.R`: D-02's 32 pass-through wrappers, **generated, not hand-written**; see `data-raw/generate_d02_wrappers.R`. Re-run that script (then `devtools::document()`) whenever `inst/extdata/d02_model_registry.csv` changes, or a new RosettaCOTS version adds, renames or changes the signature of one of these functions.
-- `inst/extdata/d02_model_registry.csv`: one row per D-02 model, with notes on which RosettaCOTS internal function and bundled posterior it forwards to.
-- `R/d02-helpers.R`: `rosettacots_fn()`, the single call site used to look up each unexported RosettaCOTS internal function.
+``` r
+# eDNA detections (0/1) for the 24 samples taken at a reef
+detections <- c(rep(1, 6), rep(0, 18))
 
-## Status
+GBR_calibrate(
+  from = "eDNA_prop", to = "Manta", level = "reef",
+  from.metric = detections, sites = rep("reefA", length(detections)),
+  to.type = "presence"
+)
+#> Predictions are made using 27 tows (median of the BR-04 data at this level).
+#>    site eDNA_prop_samples eDNA_prop Manta_presence_nTows mean_Manta_presence lowerCI_Manta_presence upperCI_Manta_presence lowerPI_Manta_presence upperPI_Manta_presence
+#> 1 reefA                24      0.25                   27          0.02721077            0.009998479             0.05155126                      0              0.2601852
 
-v0.2.0. Prediction engine plus the full 52-model BR-04 registry and wrapper set, bundled posteriors, and 32 D-02 pass-through wrappers. Tested against synthetic posteriors and, for the D-02 wrappers, a bit-for-bit equivalence check against calling RosettaCOTS's internal function directly (`tests/testthat/`). Every bundled posterior and wrapper is exercised by the test suite.
+# Tow level: one row per tow, ReefScan Surface counts from three tows
+GBR_calibrate(
+  from = "RS_surface", to = "Manta", level = "tow",
+  from.metric = c(0, 1, 3), to.type = "count", to.effort = 200
+)
+#>    site RS_surface_COTS RS_surface_effort RS_surface_density Manta_count_distance_m mean_Manta_count lowerCI_Manta_count upperCI_Manta_count lowerPI_Manta_count upperPI_Manta_count
+#> 1 tow_1               0                 1                  0                    200      0.003270746        0.0008748721         0.007735527                   0         0.007735527
+#> 2 tow_2               1                 1                  1                    200      0.389610395        0.1078433401         0.958992487                   0         3.000000000
+#> 3 tow_3               3                 1                  3                    200      0.709080723        0.1766294763         1.931767472                   0         4.000000000
+```
+
+### eDNA
+
+For `eDNA_conc`, `from.metric` is the concentration of each PCR assay,
+and the predictor is the total concentration per assay. When `eDNA_conc`
+is the tool being predicted, the prediction is the total concentration
+over `to.effort` assays (default 48). For `eDNA_prop` it is a proportion
+of `to.effort` samples (default 24). Both exist at reef level only.
+
+### Intervals and randomness
+
+The confidence and prediction intervals are 95% unless `intLevel` says
+otherwise. Predictions are for the average reef. The prediction
+intervals are simulated, so use `set.seed()` first if you need
+reproducible numbers. Some pairs involving ReefScan Deep rest on very
+few reefs; `GBR_calibrate` prints a message when such a model is used,
+and these should be treated as exploratory.
+
+See `?GBR_calibrate` for the full list of arguments and the units each
+tool expects.
 
 ## Funding
 
-This package is an output of the COTS Control and Innovation Program (CCIP) project BR-04 (Analysing RJFMP Data), which builds on the CCIP `Tool Comparison' project (D-02).
+This package is an output of the COTS Control and Innovation Program
+(CCIP) project BR-04 (Analysing RJFMP Data), which builds on the CCIP
+\`Tool Comparison’ project (D-02).
 
 ## Contributing Software
 
@@ -124,12 +246,18 @@ Contribute to your forked repository.
 
 Create a pull request.
 
-If your code passes the necessary checks and is documented, your changes and/or additions will be merged in the main `RosettaGBR` repository.
+If your code passes the necessary checks and is documented, your changes
+and/or additions will be merged in the main `RosettaGBR` repository.
 
 ## Reporting Bugs
 
-If you notice an issue with this repository, please report it using [Github Issues](https://github.com/dangladish/RosettaGBR/issues). When reporting an implementation bug, include a small example that helps to reproduce the error (a non-working minimal example). The issue will be addressed as quickly as possible.
+If you notice an issue with this repository, please report it using
+[Github Issues](https://github.com/dangladish/RosettaGBR/issues). When
+reporting an implementation bug, include a small example that helps to
+reproduce the error (a non-working minimal example). The issue will be
+addressed as quickly as possible.
 
 ## Seeking Support
 
-If you have questions or need additional support, please open a [Github Issues](https://github.com/dangladish/RosettaGBR/issues).
+If you have questions or need additional support, please open a [Github
+Issues](https://github.com/dangladish/RosettaGBR/issues).

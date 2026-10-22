@@ -1,5 +1,32 @@
 # RosettaGBR Changelog
 
+## 0.3.0 -- redesigned around a single function, `GBR_calibrate()`
+
+The package now follows the structure of RosettaCOTS: one exported function,
+fitted posteriors bundled in `inst/extdata`, one help page, and a README that
+doubles as the vignette.
+
+- New `GBR_calibrate(from, to, level, from.metric, from.effort, from.scars,
+  to.effort, to.nTows, to.type, sites, intLevel)`. It takes observations in
+  the units each tool is normally reported in, aggregates them by site,
+  converts them to the predictors the models were fitted on, chooses the model
+  from `from`, `to` and `level`, and returns one row per site with the input
+  summary, the assumed effort, the prediction, confidence interval and
+  prediction interval.
+- It is now the only exported function. The 52 `pred*From*()` wrappers, the
+  three curve engines, `rosetta_models()`, `rosetta_predict()` and
+  `rosetta_posterior()` are gone (the engines are internal).
+- The re-exported RosettaCOTS D-02 wrappers were removed; use
+  `RosettaCOTS::COTS_calibrate()` for the D-02 site-level models. RosettaGBR
+  no longer depends on or suggests RosettaCOTS.
+- Typical efforts used when none is supplied (median of the BR-04 data):
+  1 / 3 / 27 tows for tow / cull-site / reef, 188.6 m tows, 48 eDNA assays and
+  24 eDNA samples per reef.
+- The vignette was replaced by the README (`README.Rmd`).
+- `DESCRIPTION` no longer imports tibble.
+
+The earlier wrapper-based interface remains in the git history (v0.2.0).
+
 ## 0.2.0 -- bundled posteriors, standalone package
 
 - The posterior draws for all 52 BR-04 models are now bundled in

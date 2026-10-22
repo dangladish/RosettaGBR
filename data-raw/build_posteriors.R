@@ -18,7 +18,6 @@ if (!nzchar(src_dir) || !dir.exists(src_dir)) {
 }
 
 reg <- read.csv("inst/extdata/model_registry.csv", stringsAsFactors = FALSE)
-reg <- reg[!reg$is_diagnostic, ]
 
 out_dir <- "inst/extdata/posteriors"
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
