@@ -13,7 +13,7 @@ the CCIP D-02 site-level models, with tow, cull-site and reef level models
 built from the 2025/2026 Reef Joint Field Management Program (RJFMP) data.
 }
 \author{
-\strong{Maintainer}: CCIP BR-04 Team \email{placeholder@example.com}
+\strong{Maintainer}: Dan Gladish \email{dan.gladish@csiro.au}
 
 }
 \keyword{internal}
