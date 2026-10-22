@@ -380,4 +380,5 @@ addressed as quickly as possible.
 ## Seeking Support
 
 If you have questions or need additional support, please open a [Github
-Issues](https://github.com/dangladish/RosettaGBR/issues).
+Issues](https://github.com/dangladish/RosettaGBR/issues) or send a
+direct email to Dan Gladish (<dan.gladish@csiro.au>).
