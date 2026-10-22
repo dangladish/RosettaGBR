@@ -20,11 +20,11 @@ GBR_calibrate(
 }
 \arguments{
 \item{from}{A string giving the type of measurement to be converted.
-Options are \code{"Manta"}, \code{"RS_surface"}, \code{"RS_deep"}, \code{"eDNA_conc"},
+Options are \code{"Manta"}, \code{"ReefScan_surface"}, \code{"ReefScan_deep"}, \code{"eDNA_conc"},
 \code{"eDNA_prop"} (COTS) and \code{"coral_manta"}, \code{"coral_surface"},
 \code{"coral_deep"} (coral cover). Capitalisation does not matter, but the
 underscores do. \code{"transom"} may be used in place of \code{"surface"} (e.g.
-\code{"RS_transom"}, \code{"coral_transom"}). See Details.}
+\code{"ReefScan_transom"}, \code{"coral_transom"}). See Details.}
 
 \item{to}{A string giving the type of the output measurement. Options are
 the same as \code{from}. If \code{from} and \code{to} are the same, the (aggregated)
@@ -41,7 +41,7 @@ level only.}
 the units the tool is usually reported in. See Details.}
 
 \item{from.effort}{The amount of effort behind each \code{from.metric}
-observation. Only used for \code{from = "RS_surface"} and \code{"RS_deep"}, where it
+observation. Only used for \code{from = "ReefScan_surface"} and \code{"ReefScan_deep"}, where it
 is the number of tows each count was collected over. If \code{NULL} (default)
 each observation is assumed to be one tow.}
 
@@ -108,7 +108,7 @@ different \code{from} tools:
 \item{Manta}{\code{from.metric} is the number of COTS seen on each tow and
 \code{from.scars} the scar code of each tow. The predictor is the combined
 density (COTS seen plus number of tows with scars, per tow).}
-\item{RS_surface, RS_deep}{\code{from.metric} is the number of COTS detected
+\item{ReefScan_surface, ReefScan_deep}{\code{from.metric} is the number of COTS detected
 in the images; \code{from.effort} is the number of tows it was collected
 over (default one per observation). Values that share a site label are
 summed, and the predictor is the density (COTS per tow).}
@@ -127,7 +127,7 @@ Multiple observations per site are averaged.}
 }
 
 The scale of the prediction depends on the \code{to} tool. Coral cover is a
-proportion. For COTS counts (\code{"RS_surface"}, \code{"RS_deep"}, \code{"eDNA_conc"},
+proportion. For COTS counts (\code{"ReefScan_surface"}, \code{"ReefScan_deep"}, \code{"eDNA_conc"},
 \code{to.type = "count"} Manta) it is the expected count for the assumed effort
 (\code{to.nTows} tows, or \code{to.effort} assays for eDNA concentration, which is
 the sum of assay concentrations). For presence (\code{to.type = "presence"}
@@ -167,7 +167,7 @@ manta <- data.frame(
   scars = c("a", "a", "p", "a", "a", "a", "p", "p", "p", "a", "c", "p")
 )
 GBR_calibrate(
-  from = "Manta", to = "RS_surface", level = "reef",
+  from = "Manta", to = "ReefScan_surface", level = "reef",
   from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef
 )
 

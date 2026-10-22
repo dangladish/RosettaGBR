@@ -23,11 +23,11 @@ The COTS measurement methods are:
 - Manta Tow (`Manta`): the number of COTS seen on each tow, and a
   feeding-scar code for each tow (absent, present or common). Used
   together, as a combined density of COTS plus tows with scars.
-- ReefScan Surface (`RS_surface`): COTS detected in images taken from a
-  camera system towed behind the vessel (the “Transom”). Effort is the
-  number of tows.
-- ReefScan Deep (`RS_deep`): as ReefScan Surface, except that images
-  were taken using a different measurement platform.
+- ReefScan Surface (`ReefScan_surface`): COTS detected in images taken
+  from a camera system towed behind the vessel (the “Transom”). Effort
+  is the number of tows.
+- ReefScan Deep (`ReefScan_deep`): as ReefScan Surface, except that
+  images were taken using a different measurement platform.
 - eDNA concentration (`eDNA_conc`): the concentration (quantitative
   measure) from each PCR assay. There is a hierarchy to this sampling:
   multiple samples at a reef, and replicate assays on each sample.
@@ -72,24 +72,24 @@ sampled at the reef. Predicting a manta COTS *count* is possible from
 the ReefScan tools only; predicting manta *presence* is possible from
 every COTS tool.
 
-| from       | to         | levels               |
-|:-----------|:-----------|:---------------------|
-| eDNA_conc  | eDNA_prop  | reef                 |
-| eDNA_conc  | Manta      | reef                 |
-| eDNA_conc  | RS_surface | reef                 |
-| eDNA_prop  | eDNA_conc  | reef                 |
-| eDNA_prop  | Manta      | reef                 |
-| eDNA_prop  | RS_surface | reef                 |
-| Manta      | eDNA_conc  | reef                 |
-| Manta      | eDNA_prop  | reef                 |
-| Manta      | RS_deep    | tow, cull_site, reef |
-| Manta      | RS_surface | tow, cull_site, reef |
-| RS_deep    | Manta      | tow, cull_site, reef |
-| RS_deep    | RS_surface | tow, cull_site, reef |
-| RS_surface | eDNA_conc  | reef                 |
-| RS_surface | eDNA_prop  | reef                 |
-| RS_surface | Manta      | tow, cull_site, reef |
-| RS_surface | RS_deep    | tow, cull_site, reef |
+| from             | to               | levels               |
+|:-----------------|:-----------------|:---------------------|
+| eDNA_conc        | eDNA_prop        | reef                 |
+| eDNA_conc        | Manta            | reef                 |
+| eDNA_conc        | ReefScan_surface | reef                 |
+| eDNA_prop        | eDNA_conc        | reef                 |
+| eDNA_prop        | Manta            | reef                 |
+| eDNA_prop        | ReefScan_surface | reef                 |
+| Manta            | eDNA_conc        | reef                 |
+| Manta            | eDNA_prop        | reef                 |
+| Manta            | ReefScan_deep    | tow, cull_site, reef |
+| Manta            | ReefScan_surface | tow, cull_site, reef |
+| ReefScan_deep    | Manta            | tow, cull_site, reef |
+| ReefScan_deep    | ReefScan_surface | tow, cull_site, reef |
+| ReefScan_surface | eDNA_conc        | reef                 |
+| ReefScan_surface | eDNA_prop        | reef                 |
+| ReefScan_surface | Manta            | tow, cull_site, reef |
+| ReefScan_surface | ReefScan_deep    | tow, cull_site, reef |
 
 COTS pairs and the levels at which they are available.
 
@@ -151,13 +151,13 @@ manta <- data.frame(
 )
 
 GBR_calibrate(
-  from = "Manta", to = "RS_surface", level = "reef",
+  from = "Manta", to = "ReefScan_surface", level = "reef",
   from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef
 )
 #> Predictions are made using 27 tows (median of the BR-04 data at this level).
-#>    site Manta_COTS Manta_scars Manta_tows Manta_density RS_surface_nTows mean_RS_surface lowerCI_RS_surface upperCI_RS_surface lowerPI_RS_surface upperPI_RS_surface
-#> 1 reefA          1           1          6     0.3333333               27        3.570544          0.6926795            22.0624                  0            24.0250
-#> 2 reefB          7           5          6     2.0000000               27       49.118136          2.7783756           457.3918                  0           457.3918
+#>    site Manta_COTS Manta_scars Manta_tows Manta_density ReefScan_surface_nTows mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface lowerPI_ReefScan_surface upperPI_ReefScan_surface
+#> 1 reefA          1           1          6     0.3333333                     27              3.570544                0.6926795                  22.0624                        0                  24.0250
+#> 2 reefB          7           5          6     2.0000000                     27             49.118136                2.7783756                 457.3918                        0                 457.3918
 ```
 
 The effort assumed in the prediction can be changed with `to.nTows` (for
@@ -165,13 +165,13 @@ a cull site or reef), so that a prediction for 10 tows is
 
 ``` r
 GBR_calibrate(
-  from = "Manta", to = "RS_surface", level = "reef",
+  from = "Manta", to = "ReefScan_surface", level = "reef",
   from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef,
   to.nTows = 10
 )
-#>    site Manta_COTS Manta_scars Manta_tows Manta_density RS_surface_nTows mean_RS_surface lowerCI_RS_surface upperCI_RS_surface lowerPI_RS_surface upperPI_RS_surface
-#> 1 reefA          1           1          6     0.3333333               10        1.257901          0.2614193           7.231467                  0               9.00
-#> 2 reefB          7           5          6     2.0000000               10       18.749274          0.9547399         177.310041                  0             177.31
+#>    site Manta_COTS Manta_scars Manta_tows Manta_density ReefScan_surface_nTows mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface lowerPI_ReefScan_surface upperPI_ReefScan_surface
+#> 1 reefA          1           1          6     0.3333333                     10              1.257901                0.2614193                 7.231467                        0                     9.00
+#> 2 reefB          7           5          6     2.0000000                     10             18.749274                0.9547399               177.310041                        0                   177.31
 ```
 
 ### Predicting manta tows
@@ -199,13 +199,13 @@ GBR_calibrate(
 
 # Tow level: one row per tow, ReefScan Surface counts from three tows
 GBR_calibrate(
-  from = "RS_surface", to = "Manta", level = "tow",
+  from = "ReefScan_surface", to = "Manta", level = "tow",
   from.metric = c(0, 1, 3), to.type = "count", to.effort = 200
 )
-#>    site RS_surface_COTS RS_surface_effort RS_surface_density Manta_count_distance_m mean_Manta_count lowerCI_Manta_count upperCI_Manta_count lowerPI_Manta_count upperPI_Manta_count
-#> 1 tow_1               0                 1                  0                    200      0.003270746        0.0008748721         0.007735527                   0         0.007735527
-#> 2 tow_2               1                 1                  1                    200      0.389610395        0.1078433401         0.958992487                   0         3.000000000
-#> 3 tow_3               3                 1                  3                    200      0.709080723        0.1766294763         1.931767472                   0         4.000000000
+#>    site ReefScan_surface_COTS ReefScan_surface_effort ReefScan_surface_density Manta_count_distance_m mean_Manta_count lowerCI_Manta_count upperCI_Manta_count lowerPI_Manta_count upperPI_Manta_count
+#> 1 tow_1                     0                       1                        0                    200      0.003270746        0.0008748721         0.007735527                   0         0.007735527
+#> 2 tow_2                     1                       1                        1                    200      0.389610395        0.1078433401         0.958992487                   0         3.000000000
+#> 3 tow_3                     3                       1                        3                    200      0.709080723        0.1766294763         1.931767472                   0         4.000000000
 ```
 
 ### eDNA

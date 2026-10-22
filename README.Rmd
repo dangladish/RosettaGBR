@@ -15,8 +15,8 @@ RosettaGBR is an R package that provides the results of a calibration exercise b
 The COTS measurement methods are:
 
 * Manta Tow (`Manta`): the number of COTS seen on each tow, and a feeding-scar code for each tow (absent, present or common). Used together, as a combined density of COTS plus tows with scars.
-* ReefScan Surface (`RS_surface`): COTS detected in images taken from a camera system towed behind the vessel (the "Transom"). Effort is the number of tows.
-* ReefScan Deep (`RS_deep`): as ReefScan Surface, except that images were taken using a different measurement platform.
+* ReefScan Surface (`ReefScan_surface`): COTS detected in images taken from a camera system towed behind the vessel (the "Transom"). Effort is the number of tows.
+* ReefScan Deep (`ReefScan_deep`): as ReefScan Surface, except that images were taken using a different measurement platform.
 * eDNA concentration (`eDNA_conc`): the concentration (quantitative measure) from each PCR assay. There is a hierarchy to this sampling: multiple samples at a reef, and replicate assays on each sample.
 * eDNA proportion (`eDNA_prop`): as eDNA concentration, except that the measure is dichotomous (presence/absence of COTS eDNA in a sample). This is accumulated to the reef by taking the proportion of positive samples.
 
@@ -43,7 +43,7 @@ Every pair of tools exists at reef level. Cull-site and tow level exist for the 
 
 ```{r, echo = FALSE}
 reg <- RosettaGBR:::loadRegistry()
-nm <- c(manta = "Manta", rs_surface = "RS_surface", rs_deep = "RS_deep", edna_conc = "eDNA_conc", edna_prop = "eDNA_prop")
+nm <- c(manta = "Manta", rs_surface = "ReefScan_surface", rs_deep = "ReefScan_deep", edna_conc = "eDNA_conc", edna_prop = "eDNA_prop")
 cots <- reg[reg$family != "beta", ]
 tab <- aggregate(level ~ predictor_method + response_method, cots,
                  function(l) paste(c("tow", "cull_site", "reef")[c("tow", "cull_site", "reef") %in% l], collapse = ", "))
@@ -90,7 +90,7 @@ manta <- data.frame(
 )
 
 GBR_calibrate(
-  from = "Manta", to = "RS_surface", level = "reef",
+  from = "Manta", to = "ReefScan_surface", level = "reef",
   from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef
 )
 ```
@@ -99,7 +99,7 @@ The effort assumed in the prediction can be changed with `to.nTows` (for a cull 
 
 ```{r}
 GBR_calibrate(
-  from = "Manta", to = "RS_surface", level = "reef",
+  from = "Manta", to = "ReefScan_surface", level = "reef",
   from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef,
   to.nTows = 10
 )
@@ -121,7 +121,7 @@ GBR_calibrate(
 
 # Tow level: one row per tow, ReefScan Surface counts from three tows
 GBR_calibrate(
-  from = "RS_surface", to = "Manta", level = "tow",
+  from = "ReefScan_surface", to = "Manta", level = "tow",
   from.metric = c(0, 1, 3), to.type = "count", to.effort = 200
 )
 ```

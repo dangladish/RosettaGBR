@@ -14,11 +14,11 @@
 #' package.
 #'
 #' @param from A string giving the type of measurement to be converted.
-#'   Options are `"Manta"`, `"RS_surface"`, `"RS_deep"`, `"eDNA_conc"`,
+#'   Options are `"Manta"`, `"ReefScan_surface"`, `"ReefScan_deep"`, `"eDNA_conc"`,
 #'   `"eDNA_prop"` (COTS) and `"coral_manta"`, `"coral_surface"`,
 #'   `"coral_deep"` (coral cover). Capitalisation does not matter, but the
 #'   underscores do. `"transom"` may be used in place of `"surface"` (e.g.
-#'   `"RS_transom"`, `"coral_transom"`). See Details.
+#'   `"ReefScan_transom"`, `"coral_transom"`). See Details.
 #' @param to A string giving the type of the output measurement. Options are
 #'   the same as `from`. If `from` and `to` are the same, the (aggregated)
 #'   `from` data are returned with a warning.
@@ -31,7 +31,7 @@
 #' @param from.metric The observation values for the `from` measurement, in
 #'   the units the tool is usually reported in. See Details.
 #' @param from.effort The amount of effort behind each `from.metric`
-#'   observation. Only used for `from = "RS_surface"` and `"RS_deep"`, where it
+#'   observation. Only used for `from = "ReefScan_surface"` and `"ReefScan_deep"`, where it
 #'   is the number of tows each count was collected over. If `NULL` (default)
 #'   each observation is assumed to be one tow.
 #' @param from.scars Only used for `from = "Manta"`: the feeding-scar code for
@@ -72,7 +72,7 @@
 #'   \item{Manta}{`from.metric` is the number of COTS seen on each tow and
 #'     `from.scars` the scar code of each tow. The predictor is the combined
 #'     density (COTS seen plus number of tows with scars, per tow).}
-#'   \item{RS_surface, RS_deep}{`from.metric` is the number of COTS detected
+#'   \item{ReefScan_surface, ReefScan_deep}{`from.metric` is the number of COTS detected
 #'     in the images; `from.effort` is the number of tows it was collected
 #'     over (default one per observation). Values that share a site label are
 #'     summed, and the predictor is the density (COTS per tow).}
@@ -91,7 +91,7 @@
 #' }
 #'
 #' The scale of the prediction depends on the `to` tool. Coral cover is a
-#' proportion. For COTS counts (`"RS_surface"`, `"RS_deep"`, `"eDNA_conc"`,
+#' proportion. For COTS counts (`"ReefScan_surface"`, `"ReefScan_deep"`, `"eDNA_conc"`,
 #' `to.type = "count"` Manta) it is the expected count for the assumed effort
 #' (`to.nTows` tows, or `to.effort` assays for eDNA concentration, which is
 #' the sum of assay concentrations). For presence (`to.type = "presence"`
@@ -137,7 +137,7 @@
 #'   scars = c("a", "a", "p", "a", "a", "a", "p", "p", "p", "a", "c", "p")
 #' )
 #' GBR_calibrate(
-#'   from = "Manta", to = "RS_surface", level = "reef",
+#'   from = "Manta", to = "ReefScan_surface", level = "reef",
 #'   from.metric = manta$cots, from.scars = manta$scars, sites = manta$reef
 #' )
 #'

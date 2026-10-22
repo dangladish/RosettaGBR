@@ -19,11 +19,11 @@ coralMidpoints <- c(
   "3-" = 0.35, "3+" = 0.45, "4-" = 0.55, "4+" = 0.65, "5-" = 0.75, "5+" = 0.875
 )
 
-validTools <- c("manta", "rs_surface", "rs_deep", "edna_conc", "edna_prop",
+validTools <- c("manta", "reefscan_surface", "reefscan_deep", "edna_conc", "edna_prop",
                 "coral_manta", "coral_surface", "coral_deep")
 
 displayName <- c(
-  manta = "Manta", rs_surface = "RS_surface", rs_deep = "RS_deep",
+  manta = "Manta", reefscan_surface = "ReefScan_surface", reefscan_deep = "ReefScan_deep",
   edna_conc = "eDNA_conc", edna_prop = "eDNA_prop",
   coral_manta = "coral_manta", coral_surface = "coral_surface", coral_deep = "coral_deep"
 )
@@ -46,6 +46,7 @@ isCoral <- function(key) startsWith(key, "coral_")
 toMethod <- function(key) {
   switch(key,
     coral_manta = "manta", coral_surface = "rs_surface", coral_deep = "rs_deep",
+    reefscan_surface = "rs_surface", reefscan_deep = "rs_deep",
     key
   )
 }
@@ -132,7 +133,7 @@ aggregateFrom <- function(key, metric, effort, scars, sites) {
     return(list(out = out, x = x))
   }
 
-  # RS_surface / RS_deep
+  # ReefScan_surface / ReefScan_deep
   eff <- if (is.null(effort)) rep(1, length(metric)) else effort
   if (!is.numeric(eff) || any(eff <= 0, na.rm = TRUE)) stop("from.effort must be positive numbers.", call. = FALSE)
   eff[is.na(metric)] <- NA
@@ -229,7 +230,7 @@ resolveToEffort <- function(model, to_key, level, to.effort, to.nTows) {
     return(list(effort = NA_real_, size = n, column = "nTows", value = n))
   }
 
-  if (to_key %in% c("rs_surface", "rs_deep")) {
+  if (to_key %in% c("reefscan_surface", "reefscan_deep")) {
     n <- getTows()
     return(list(effort = n, size = NA_real_, column = "nTows", value = n))
   }

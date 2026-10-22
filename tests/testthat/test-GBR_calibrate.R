@@ -23,8 +23,8 @@ test_that("every model is reachable through GBR_calibrate()", {
   reg <- RosettaGBR:::loadRegistry()
   keyOf <- function(method, coral) {
     switch(method, manta = if (coral) "coral_manta" else "Manta",
-           rs_surface = if (coral) "coral_surface" else "RS_surface",
-           rs_deep = if (coral) "coral_deep" else "RS_deep",
+           rs_surface = if (coral) "coral_surface" else "ReefScan_surface",
+           rs_deep = if (coral) "coral_deep" else "ReefScan_deep",
            edna_conc = "eDNA_conc", edna_prop = "eDNA_prop")
   }
   set.seed(9120)
@@ -61,18 +61,18 @@ test_that("Negative Binomial predictions scale with effort and match a direct ca
   post <- post_of("surf_from_manta_reef_cots")
   set.seed(2)
   out <- suppressMessages(GBR_calibrate(
-    "Manta", "RS_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c("a", "p", "p", "a"),
+    "Manta", "ReefScan_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c("a", "p", "p", "a"),
     sites = rep("r", 4), to.nTows = 10
   ))
   x <- (3 + 2) / 4
   direct <- trimmed(exp(post[, "alpha"] + post[, "beta"] * log(x + 0.01) + log(10)))
-  expect_equal(out$mean_RS_surface, direct, tolerance = 0.03)
+  expect_equal(out$mean_ReefScan_surface, direct, tolerance = 0.03)
   expect_equal(out$Manta_density, x)
   out20 <- suppressMessages(GBR_calibrate(
-    "Manta", "RS_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c("a", "p", "p", "a"),
+    "Manta", "ReefScan_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c("a", "p", "p", "a"),
     sites = rep("r", 4), to.nTows = 20
   ))
-  expect_equal(out20$mean_RS_surface / out$mean_RS_surface, 2, tolerance = 0.05)
+  expect_equal(out20$mean_ReefScan_surface / out$mean_ReefScan_surface, 2, tolerance = 0.05)
 })
 
 test_that("intervals are ordered and widen with intLevel", {
@@ -85,13 +85,13 @@ test_that("intervals are ordered and widen with intLevel", {
 
 test_that("input is aggregated per site", {
   out <- suppressMessages(GBR_calibrate(
-    "RS_surface", "RS_deep", "cull_site", from.metric = c(1, 2, 0, 4), from.effort = c(1, 1, 2, 2),
+    "ReefScan_surface", "ReefScan_deep", "cull_site", from.metric = c(1, 2, 0, 4), from.effort = c(1, 1, 2, 2),
     sites = c("a", "a", "b", "b")
   ))
   expect_equal(out$site, c("a", "b"))
-  expect_equal(out$RS_surface_COTS, c(3, 4))
-  expect_equal(out$RS_surface_effort, c(2, 4))
-  expect_equal(out$RS_surface_density, c(1.5, 1))
+  expect_equal(out$ReefScan_surface_COTS, c(3, 4))
+  expect_equal(out$ReefScan_surface_effort, c(2, 4))
+  expect_equal(out$ReefScan_surface_density, c(1.5, 1))
 
   eco <- GBR_calibrate("eDNA_conc", "eDNA_prop", "reef", from.metric = c(10, 20, NA, 30), sites = rep("r", 4))
   expect_equal(eco$eDNA_conc_sum, 60)
@@ -113,12 +113,12 @@ test_that("bad requests give informative errors", {
   expect_error(GBR_calibrate("coral_manta", "Manta", "reef", from.metric = 0.2, sites = "r"), "within")
   expect_error(GBR_calibrate("eDNA_conc", "Manta", "tow", from.metric = 1), "Available levels: reef")
   expect_error(GBR_calibrate("eDNA_conc", "Manta", "reef", from.metric = 1, sites = "r", to.type = "count"), "to.type")
-  expect_error(GBR_calibrate("Manta", "RS_deep", "reef", from.metric = 1, sites = "r"), "from.scars")
+  expect_error(GBR_calibrate("Manta", "ReefScan_deep", "reef", from.metric = 1, sites = "r"), "from.scars")
   expect_error(GBR_calibrate("coral_deep", "coral_manta", "reef", from.metric = 20, sites = "r"), "proportion")
   expect_error(GBR_calibrate("nonsense", "Manta", from.metric = 1), "Unknown")
-  expect_error(GBR_calibrate("RS_surface", "Manta", "tow", from.metric = c(1, 2), sites = c("a", "a")), "unique")
+  expect_error(GBR_calibrate("ReefScan_surface", "Manta", "tow", from.metric = c(1, 2), sites = c("a", "a")), "unique")
   expect_warning(
-    suppressMessages(GBR_calibrate("RS_surface", "RS_deep", "reef", from.metric = c(1, 2))),
+    suppressMessages(GBR_calibrate("ReefScan_surface", "ReefScan_deep", "reef", from.metric = c(1, 2))),
     "single site"
   )
   expect_warning(
