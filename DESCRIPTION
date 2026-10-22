@@ -1,7 +1,7 @@
 Package: RosettaGBR
 Title: Translation Between Methods for Measuring COTS and Coral Cover on the Great Barrier Reef
 Version: 0.4.0
-Authors@R: person("CCIP", "BR-04 Team", role = c("aut", "cre"), email = "placeholder@example.com")
+Authors@R: person("Dan", "Gladish", role = c("aut", "cre"), email = "dan.gladish@csiro.au")
 Description: Predicts one Great Barrier Reef monitoring measurement from
     another, with confidence and prediction intervals, through
     GBR_calibrate(). GBR_curve() returns the full calibration curve for a pair
