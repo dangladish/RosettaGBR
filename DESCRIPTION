@@ -13,7 +13,7 @@ Description: Predicts one Great Barrier Reef monitoring measurement from
     which supports the site-level calibration models of CCIP D-02, with the
     multi-level models built for CCIP BR-04 (project RJFMP). The fitted
     posterior draws are bundled with the package; it does not fit models.
-License: MIT + file LICENSE
+License: GPL (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
