@@ -8,6 +8,10 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 ## RosettaGBR: translation between methods for measuring COTS and coral cover on the Great Barrier Reef
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/dangladish/RosettaGBR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dangladish/RosettaGBR/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 ## Summary
 
 RosettaGBR is an R package that provides the results of a calibration exercise between different methods for measuring Crown-of-Thorns Starfish (COTS) and coral cover on the Great Barrier Reef (GBR). Its main function `GBR_calibrate` is a tool that predicts one measure from another, along with confidence and prediction intervals. Two further functions help with analysing the results: `GBR_curve` returns the whole calibration curve for a pair of tools, and `GBR_posterior` returns the fitted posterior draws. RosettaGBR is built upon data obtained during 2025/2026 Reef Joint Field Management Program (RJFMP) trips, and extends [RosettaCOTS](https://github.com/Scott-Foster/RosettaCOTS), which presents the site-level calibration models from the CCIP D-02 field trip. Where RosettaCOTS works at the site level, RosettaGBR works at three spatial levels: the individual manta tow, the cull site and the reef. It presents the results of the pair-wise models of the methods that measure COTS and of the methods that measure coral cover. The fitted models are bundled with the package.

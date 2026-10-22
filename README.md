@@ -1,6 +1,11 @@
 
 ## RosettaGBR: translation between methods for measuring COTS and coral cover on the Great Barrier Reef
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/dangladish/RosettaGBR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dangladish/RosettaGBR/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 ## Summary
 
 RosettaGBR is an R package that provides the results of a calibration
