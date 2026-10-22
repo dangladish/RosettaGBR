@@ -1,0 +1,5 @@
+^doc$
+^Meta$
+^data-raw$
+^\.Rproj\.user$
+^RosettaGBR\.Rproj$

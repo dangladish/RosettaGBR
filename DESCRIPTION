@@ -1,0 +1,40 @@
+Package: RosettaGBR
+Title: Cross-Method Prediction for GBR Coral Cover and COTS Monitoring Data
+Version: 0.1.0
+Authors@R: person("CCIP", "BR-04 Team", role = c("aut", "cre"), email = "placeholder@example.com")
+Description: Prediction functions for calibration models relating different
+    Great Barrier Reef monitoring methods (manta tow, ReefScan Surface,
+    ReefScan Deep, RHIS, eDNA) to one another, for coral cover (Beta
+    regression) and Crown-of-Thorns Starfish counts/presence (Negative
+    Binomial and Binomial regression). Extends 'RosettaCOTS'
+    (Foster, github.com/Scott-Foster/RosettaCOTS), which supports CCIP D-02's
+    site-level calibration models, with the tow/cull-site/reef multi-level
+    model set built for CCIP BR-04 (project RJFMP), and re-exports
+    'RosettaCOTS's own (otherwise internal/unexported) D-02 per-model
+    functions under stable names alongside them (see 'rosetta_models()').
+    The BR-04 functions take a posterior-samples matrix (from the saved
+    BR-04 model fits, columns alpha/beta/phi for Beta
+    models or alpha/beta/r for Negative Binomial models, population-level
+    only) and a vector of predictor values, and return posterior
+    mean/credible-interval/prediction-interval curves; this package does not
+    fit models or bundle data for them -- it is a prediction/
+    calibration-curve layer only. The D-02 functions are thin pass-throughs
+    to 'RosettaCOTS', which does bundle its own fitted posteriors.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    stats,
+    tibble,
+    utils
+Suggests:
+    ggplot2,
+    knitr,
+    RosettaCOTS,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Remotes:
+    Scott-Foster/RosettaCOTS
+Config/testthat/edition: 3
+VignetteBuilder: knitr
