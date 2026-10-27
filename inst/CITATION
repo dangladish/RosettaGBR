@@ -1,0 +1,16 @@
+bibentry(
+  "Manual",
+  title = paste0(
+    "RosettaGBR: Translation Between Methods for Measuring COTS and Coral ",
+    "Cover on the Great Barrier Reef"
+  ),
+  author = person("Dan", "Gladish", email = "dan.gladish@csiro.au"),
+  year = "2026",
+  note = paste("R package version", meta$Version),
+  url = "https://github.com/dangladish/RosettaGBR",
+  textVersion = paste0(
+    "Gladish D (2026). RosettaGBR: Translation Between Methods for Measuring ",
+    "COTS and Coral Cover on the Great Barrier Reef. R package version ",
+    meta$Version, ". https://github.com/dangladish/RosettaGBR"
+  )
+)
