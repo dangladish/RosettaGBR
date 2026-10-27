@@ -1,5 +1,26 @@
 # RosettaGBR Changelog
 
+## 0.4.1 -- fix predictor offset (`eps`) for 25 COTS models
+
+- **Bug fix.** `model_registry.csv` recorded `eps = 1e-04` for the 24
+  cross-method COTS models (manta, ReefScan Surface and ReefScan Deep, all
+  levels) and for `eDNAprop_from_surf_reef`. The bundled posteriors were fitted
+  with `eps = 0.01` (the BR-04 production value since 2026-10-08), so
+  `GBR_calibrate()`, `GBR_curve()` and the model descriptions were adding the
+  wrong constant inside `log(x + eps)`. Predictions at low or zero density were
+  affected most (for `x = 0`, `log(0.0001)` is about -9.2 against about -4.6
+  with the fitted 0.01); the difference fades as density grows. All 34
+  Negative Binomial and Binomial models now carry `eps = 0.01`, and the model
+  notes (shown by `GBR_posterior()`) say so. Coral (Beta) models do not use
+  `eps`.
+- The binomial prediction branch now stops with an informative error if the
+  link stored on a bundled posterior (`attr(post, "link")`) disagrees with the
+  registry link, and for any link other than logit or cloglog. No bundled model
+  trips this today.
+- New tests: every non-Beta registry row has `eps = 0.01`; the tow-level
+  cloglog models match a direct calculation from the posterior; the link guard.
+- README output regenerated.
+
 ## 0.4.0 -- `GBR_curve()` and `GBR_posterior()`
 
 - New `GBR_curve(from, to, level, x, nPoints, to.effort, to.nTows, to.type,

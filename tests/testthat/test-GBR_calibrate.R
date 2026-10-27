@@ -68,6 +68,7 @@ test_that("Negative Binomial predictions scale with effort and match a direct ca
   direct <- trimmed(exp(post[, "alpha"] + post[, "beta"] * log(x + 0.01) + log(10)))
   expect_equal(out$mean_ReefScan_surface, direct, tolerance = 0.03)
   expect_equal(out$Manta_density, x)
+  set.seed(2)
   out20 <- suppressMessages(GBR_calibrate(
     "Manta", "ReefScan_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c("a", "p", "p", "a"),
     sites = rep("r", 4), to.nTows = 20
@@ -139,4 +140,36 @@ test_that("the reef-level new-reef effect widens only the presence prediction in
   without_re <- RosettaGBR:::predictModel(model, post_no_re, x = 0.5, effort = NA, size = 50, intLevel = 0.95)
   expect_equal(with_re[, c("lowerCI", "upperCI")], without_re[, c("lowerCI", "upperCI")])
   expect_gt(with_re[, "upperPI"] - with_re[, "lowerPI"], without_re[, "upperPI"] - without_re[, "lowerPI"])
+})
+
+test_that("registry eps is 0.01 for every Negative Binomial and Binomial model", {
+  reg <- RosettaGBR:::loadRegistry()
+  nonbeta <- reg[reg$family != "beta", ]
+  expect_equal(nrow(nonbeta), 34)
+  expect_true(all(nonbeta$eps == 0.01))
+  expect_false(any(grepl("0.0001", reg$notes, fixed = TRUE)))
+})
+
+test_that("tow-level cloglog predictions match a direct calculation with eps = 0.01", {
+  nm <- "manta_from_surf_tow_cots"
+  post <- post_of(nm)
+  expect_equal(attr(post, "link"), "cloglog")
+  model <- as.list(RosettaGBR:::loadRegistry()[RosettaGBR:::loadRegistry()$model_name == nm, ])
+  expect_equal(model$eps, 0.01)
+  set.seed(4)
+  out <- RosettaGBR:::predictModel(model, post, x = 0, effort = 500, size = 1, intLevel = 0.95)
+  direct <- trimmed(1 - exp(-exp(post[, "alpha"] + post[, "beta"] * log(0 + 0.01) + log(500))))
+  expect_equal(unname(out[, "mean"]), direct, tolerance = 0.03)
+})
+
+test_that("binomial prediction stops if the posterior link disagrees with the registry", {
+  nm <- "manta_from_surf_tow_cots"
+  post <- post_of(nm)
+  model <- as.list(RosettaGBR:::loadRegistry()[RosettaGBR:::loadRegistry()$model_name == nm, ])
+  bad <- post
+  attr(bad, "link") <- "logit"
+  expect_error(RosettaGBR:::predictModel(model, bad, x = 1, effort = 500, size = 1, intLevel = 0.95), "Link mismatch")
+  model_bad <- model
+  model_bad$link <- "probit"
+  expect_error(RosettaGBR:::predictModel(model_bad, `attr<-`(post, "link", NULL), x = 1, effort = 500, size = 1, intLevel = 0.95), "Unsupported link")
 })

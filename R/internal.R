@@ -293,7 +293,16 @@ predictModel <- function(model, post, x, effort, size, intLevel, nDraws = 2000) 
     union_ci <- TRUE
   } else {
     link <- model$link
-    linv <- if (link == "cloglog") function(l) 1 - exp(-exp(l)) else plogis
+    post_link <- attr(post, "link")
+    if (!is.null(post_link) && !identical(post_link, link)) {
+      stop("Link mismatch for ", model$model_name, ": the registry says '", link,
+           "' but the bundled posterior was saved with '", post_link, "'.", call. = FALSE)
+    }
+    linv <- switch(link,
+      logit = plogis,
+      cloglog = function(l) 1 - exp(-exp(l)),
+      stop("Unsupported link '", link, "' for ", model$model_name, ".", call. = FALSE)
+    )
     lp <- outer(beta, log(x + eps)) + alpha
     if (isTRUE(model$has_offset)) lp <- lp + log(effort)
     mu <- linv(lp)
