@@ -18,7 +18,7 @@ RosettaGBR is an R package that provides the results of a calibration exercise b
 
 The COTS measurement methods are:
 
-* Manta Tow (`Manta`): the number of COTS seen on each tow, and a feeding-scar code for each tow (absent, present or common). Used together, as a combined density of COTS plus tows with scars.
+* Manta Tow (`Manta`): the number of COTS seen on each tow, and the number of feeding scars counted on each tow (or, if no count was recorded, a scar code: absent, present or common). Used together, as a combined density of COTS seen plus scars counted, per tow.
 * ReefScan Surface (`ReefScan_surface`): COTS detected in images taken from a camera system towed behind the vessel (the "Transom"). Effort is the number of tows.
 * ReefScan Deep (`ReefScan_deep`): as ReefScan Surface, except that images were taken using a different measurement platform.
 * eDNA concentration (`eDNA_conc`): the concentration (quantitative measure) from each PCR assay. There is a hierarchy to this sampling: multiple samples at a reef, and replicate assays on each sample.
@@ -84,13 +84,13 @@ The manta tow categories can be supplied as they are recorded (`"0"`, `"1-"`, `"
 
 ### COTS from manta tows
 
-Manta tows need the COTS seen on each tow (`from.metric`) and the feeding-scar code of each tow (`from.scars`: `"a"`, `"p"` or `"c"`). Here we predict the number of COTS that ReefScan Surface would detect over 27 tows (the median number of tows at a reef in the BR-04 data, and the default) at two reefs.
+Manta tows need the COTS seen on each tow (`from.metric`) and the number of feeding scars counted on each tow (`from.scars`). If a tow has no scar count, give its scar code instead (`"a"`, `"p"` or `"c"`); these are converted to 0, 2 and 11 scars, the values the BR-04 analysis used for tows without a recorded count. Here we predict the number of COTS that ReefScan Surface would detect over 27 tows (the median number of tows at a reef in the BR-04 data, and the default) at two reefs.
 
 ```{r}
 manta <- data.frame(
   reef  = rep(c("reefA", "reefB"), each = 6),
   cots  = c(0, 0, 1, 0, 0, 0, 0, 2, 1, 0, 3, 1),
-  scars = c("a", "a", "p", "a", "a", "a", "p", "p", "p", "a", "c", "p")
+  scars = c(0, 0, 1, 0, 0, 0, 2, 1, 3, 0, 12, 2)
 )
 
 GBR_calibrate(
@@ -111,7 +111,7 @@ GBR_calibrate(
 
 ### Predicting manta tows
 
-When the manta tow is the tool being predicted, there are two kinds of prediction, chosen by `to.type`. The default, `"presence"`, is the probability that a tow has a scar present or at least one COTS seen (at cull-site and reef level, the proportion of `to.nTows` tows that do). The alternative, `"count"`, is the combined COTS-plus-scar count, and is only available from the ReefScan tools. At tow level the effort is the tow distance in metres (`to.effort`).
+When the manta tow is the tool being predicted, there are two kinds of prediction, chosen by `to.type`. The default, `"presence"`, is the probability that a tow has a scar present or at least one COTS seen (at cull-site and reef level, the proportion of `to.nTows` tows that do). The alternative, `"count"`, is the combined count (COTS plus feeding scars counted on a tow at tow level, and the number of the `to.nTows` tows with a scar or COTS at cull-site and reef level), and is only available from the ReefScan tools. At tow level the effort is the tow distance in metres (`to.effort`).
 
 ```{r}
 # eDNA detections (0/1) for the 24 samples taken at a reef
@@ -162,7 +162,7 @@ attr(cots_curve, "xlab")
 attr(cots_curve, "ylab")
 ```
 
-You can give your own grid of predictor values with `x`, and the `x` scale is the one the models were fitted on: a proportion for coral cover and `eDNA_prop`, COTS per tow for the ReefScan tools, the combined density for `Manta` (COTS seen plus tows with scars, per tow), and the concentration per assay for `eDNA_conc`. Overlaying your own observations is then a matter of adding points to the plot.
+You can give your own grid of predictor values with `x`, and the `x` scale is the one the models were fitted on: a proportion for coral cover and `eDNA_prop`, COTS per tow for the ReefScan tools, the combined density for `Manta` (COTS seen plus feeding scars counted, per tow), and the concentration per assay for `eDNA_conc`. Overlaying your own observations is then a matter of adding points to the plot.
 
 ## Posterior draws
 

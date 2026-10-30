@@ -27,9 +27,10 @@ fitted models are bundled with the package.
 
 The COTS measurement methods are:
 
-- Manta Tow (`Manta`): the number of COTS seen on each tow, and a
-  feeding-scar code for each tow (absent, present or common). Used
-  together, as a combined density of COTS plus tows with scars.
+- Manta Tow (`Manta`): the number of COTS seen on each tow, and the
+  number of feeding scars counted on each tow (or, if no count was
+  recorded, a scar code: absent, present or common). Used together, as a
+  combined density of COTS seen plus scars counted, per tow.
 - ReefScan Surface (`ReefScan_surface`): COTS detected in images taken
   from a camera system towed behind the vessel (the “Transom”). Effort
   is the number of tows.
@@ -150,17 +151,19 @@ The manta tow categories can be supplied as they are recorded (`"0"`,
 
 ### COTS from manta tows
 
-Manta tows need the COTS seen on each tow (`from.metric`) and the
-feeding-scar code of each tow (`from.scars`: `"a"`, `"p"` or `"c"`).
-Here we predict the number of COTS that ReefScan Surface would detect
-over 27 tows (the median number of tows at a reef in the BR-04 data, and
-the default) at two reefs.
+Manta tows need the COTS seen on each tow (`from.metric`) and the number
+of feeding scars counted on each tow (`from.scars`). If a tow has no
+scar count, give its scar code instead (`"a"`, `"p"` or `"c"`); these
+are converted to 0, 2 and 11 scars, the values the BR-04 analysis used
+for tows without a recorded count. Here we predict the number of COTS
+that ReefScan Surface would detect over 27 tows (the median number of
+tows at a reef in the BR-04 data, and the default) at two reefs.
 
 ``` r
 manta <- data.frame(
   reef  = rep(c("reefA", "reefB"), each = 6),
   cots  = c(0, 0, 1, 0, 0, 0, 0, 2, 1, 0, 3, 1),
-  scars = c("a", "a", "p", "a", "a", "a", "p", "p", "p", "a", "c", "p")
+  scars = c(0, 0, 1, 0, 0, 0, 2, 1, 3, 0, 12, 2)
 )
 
 GBR_calibrate(
@@ -170,13 +173,13 @@ GBR_calibrate(
 #> Predictions are made using 27 tows (median of the BR-04 data at this level).
 #>    site Manta_COTS Manta_scars Manta_tows Manta_density ReefScan_surface_nTows
 #> 1 reefA          1           1          6     0.3333333                     27
-#> 2 reefB          7           5          6     2.0000000                     27
+#> 2 reefB          7          20          6     4.5000000                     27
 #>   mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface
-#> 1              3.714394                0.7116408                 23.05713
-#> 2             49.502771                2.7877529                461.45233
+#> 1              2.260749                0.4761434                 14.35005
+#> 2             52.761780                2.4870009                525.49432
 #>   lowerPI_ReefScan_surface upperPI_ReefScan_surface
-#> 1                        0                 23.05713
-#> 2                        0                461.45233
+#> 1                        0                  17.0000
+#> 2                        0                 525.4943
 ```
 
 The effort assumed in the prediction can be changed with `to.nTows` (for
@@ -190,13 +193,13 @@ GBR_calibrate(
 )
 #>    site Manta_COTS Manta_scars Manta_tows Manta_density ReefScan_surface_nTows
 #> 1 reefA          1           1          6     0.3333333                     10
-#> 2 reefB          7           5          6     2.0000000                     10
+#> 2 reefB          7          20          6     4.5000000                     10
 #>   mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface
-#> 1              1.261888                 0.272939                 7.439223
-#> 2             17.120157                 1.012669               175.431270
+#> 1             0.8084995                0.1784667                 4.249228
+#> 2            20.5523132                0.7830771               207.147933
 #>   lowerPI_ReefScan_surface upperPI_ReefScan_surface
-#> 1                        0                  11.0000
-#> 2                        0                 175.4313
+#> 1                        0                   8.0000
+#> 2                        0                 207.1479
 ```
 
 ### Predicting manta tows
@@ -205,9 +208,11 @@ When the manta tow is the tool being predicted, there are two kinds of
 prediction, chosen by `to.type`. The default, `"presence"`, is the
 probability that a tow has a scar present or at least one COTS seen (at
 cull-site and reef level, the proportion of `to.nTows` tows that do).
-The alternative, `"count"`, is the combined COTS-plus-scar count, and is
-only available from the ReefScan tools. At tow level the effort is the
-tow distance in metres (`to.effort`).
+The alternative, `"count"`, is the combined count (COTS plus feeding
+scars counted on a tow at tow level, and the number of the `to.nTows`
+tows with a scar or COTS at cull-site and reef level), and is only
+available from the ReefScan tools. At tow level the effort is the tow
+distance in metres (`to.effort`).
 
 ``` r
 # eDNA detections (0/1) for the 24 samples taken at a reef
@@ -220,9 +225,9 @@ GBR_calibrate(
 )
 #> Predictions are made using 27 tows (median of the BR-04 data at this level).
 #>    site eDNA_prop_samples eDNA_prop Manta_presence_nTows mean_Manta_presence
-#> 1 reefA                24      0.25                   27          0.02699719
+#> 1 reefA                24      0.25                   27          0.02692562
 #>   lowerCI_Manta_presence upperCI_Manta_presence lowerPI_Manta_presence
-#> 1            0.009825514             0.05155126                      0
+#> 1              0.0102132             0.05109609                      0
 #>   upperPI_Manta_presence
 #> 1              0.2962963
 
@@ -236,13 +241,13 @@ GBR_calibrate(
 #> 2 tow_2                     1                       1                        1
 #> 3 tow_3                     3                       1                        3
 #>   Manta_count_distance_m mean_Manta_count lowerCI_Manta_count
-#> 1                    200       0.03393765          0.01254447
-#> 2                    200       0.39209976          0.10831616
-#> 3                    200       0.71115556          0.17686912
+#> 1                    200       0.04767958          0.01704926
+#> 2                    200       1.04402687          0.20281279
+#> 3                    200       2.27129065          0.34390933
 #>   upperCI_Manta_count lowerPI_Manta_count upperPI_Manta_count
-#> 1          0.06531102                   0               1.000
-#> 2          0.99505054                   0               3.000
-#> 3          2.01522886                   0               3.025
+#> 1           0.1001247                   0               1.000
+#> 2           3.5609452                   0               8.000
+#> 3           9.5243481                   0              21.025
 ```
 
 ### eDNA
@@ -306,8 +311,8 @@ attr(cots_curve, "ylab")
 You can give your own grid of predictor values with `x`, and the `x`
 scale is the one the models were fitted on: a proportion for coral cover
 and `eDNA_prop`, COTS per tow for the ReefScan tools, the combined
-density for `Manta` (COTS seen plus tows with scars, per tow), and the
-concentration per assay for `eDNA_conc`. Overlaying your own
+density for `Manta` (COTS seen plus feeding scars counted, per tow), and
+the concentration per assay for `eDNA_conc`. Overlaying your own
 observations is then a matter of adding points to the plot.
 
 ## Posterior draws
@@ -342,9 +347,9 @@ A one-row-per-parameter summary is available with `summary = TRUE`:
 ``` r
 GBR_posterior(from = "Manta", to = "ReefScan_surface", level = "reef", summary = TRUE)
 #>   parameter       mean        sd        q2.5        q50     q97.5
-#> 1     alpha -1.0888677 1.1646544 -2.77296452 -1.2583890 1.7072765
-#> 2      beta  1.1741258 0.3749211  0.53376349  1.1470541 1.9822017
-#> 3         r  0.2738394 0.2093011  0.05694921  0.2185941 0.8364702
+#> 1     alpha -1.7458900 1.0684211 -3.27015871 -1.9218575 0.8518705
+#> 2      beta  0.9789144 0.3435814  0.35935098  0.9614559 1.7161967
+#> 3         r  0.2105414 0.1515395  0.04699403  0.1742713 0.5889271
 ```
 
 and the draws can be used for your own calculations. For example, the

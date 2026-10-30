@@ -57,6 +57,12 @@ siteSum <- function(v, sites) as.numeric(tapply(v, sites, sum, na.rm = TRUE))
 siteMean <- function(v, sites) as.numeric(tapply(v, sites, mean, na.rm = TRUE))
 siteCount <- function(v, sites) as.numeric(tapply(v, sites, function(z) sum(!is.na(z))))
 
+# Number of feeding scars assumed for a manta scar CODE when no count is available. The BR-04
+# analysis used the recorded scar count where there was one, and for tows without one
+# (FMPCRS 2025-02, before counts were recorded) imputed present = 2 (median of recorded counts
+# for "present" tows) and common = 11 (the minimum for "common"; absent = 0).
+scarCodeCount <- c(a = 0, p = 2, c = 11)
+
 aggregateFrom <- function(key, metric, effort, scars, sites) {
   out <- data.frame(site = levels(sites), stringsAsFactors = FALSE)
   nm <- displayName[[key]]
@@ -106,28 +112,34 @@ aggregateFrom <- function(key, metric, effort, scars, sites) {
 
   if (key == "manta") {
     if (is.null(scars)) {
-      stop("from = \"Manta\" needs `from.scars`: the scar code (a/p/c) of each tow, ",
-           "the same length as from.metric.", call. = FALSE)
+      stop("from = \"Manta\" needs `from.scars`: the number of feeding scars on each tow ",
+           "(or the scar code a/p/c), the same length as from.metric.", call. = FALSE)
     }
     if (length(scars) != length(metric)) {
       stop("from.scars must be the same length as from.metric.", call. = FALSE)
     }
     if (is.character(scars) || is.factor(scars)) {
       s <- tolower(as.character(scars))
-      if (any(!s %in% c("a", "p", "c") & !is.na(s))) {
-        stop("from.scars must be \"a\", \"p\" or \"c\" (or numeric 0/1).", call. = FALSE)
+      if (any(!s %in% names(scarCodeCount) & !is.na(s))) {
+        stop("from.scars must be scar counts (non-negative numbers) or the codes ",
+             "\"a\", \"p\" or \"c\".", call. = FALSE)
       }
-      present <- as.numeric(s %in% c("p", "c"))
-      present[is.na(s)] <- NA
+      n_scars <- unname(scarCodeCount[s])
+      message("from.scars codes were converted to scar counts (a = 0, p = ", scarCodeCount[["p"]],
+              ", c = ", scarCodeCount[["c"]], "), as in the BR-04 analysis for tows without a recorded count.")
     } else {
-      present <- as.numeric(scars > 0)
+      if (!is.numeric(scars) || any(scars < 0, na.rm = TRUE)) {
+        stop("from.scars must be scar counts (non-negative numbers) or the codes ",
+             "\"a\", \"p\" or \"c\".", call. = FALSE)
+      }
+      n_scars <- as.numeric(scars)
     }
     cots <- siteSum(metric, sites)
-    scar_tows <- siteSum(present, sites)
+    scar_total <- siteSum(n_scars, sites)
     tows <- siteCount(metric, sites)
-    x <- (cots + scar_tows) / tows
+    x <- (cots + scar_total) / tows
     out$Manta_COTS <- cots
-    out$Manta_scars <- scar_tows
+    out$Manta_scars <- scar_total
     out$Manta_tows <- tows
     out$Manta_density <- x
     return(list(out = out, x = x))

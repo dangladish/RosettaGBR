@@ -1,5 +1,28 @@
 # RosettaGBR Changelog
 
+## 0.5.0 -- the manta predictor now uses feeding-scar COUNTS
+
+- **Change to the manta COTS-plus-scars index.** BR-04 previously added scar *presence* (0/1 per
+  tow, i.e. the number of tows with scars) to the COTS count. The manta data carry a numeric
+  per-tow scar count (`ScarsCount`) for tows from 14 June 2025 (FMPCRS 2025-03 onward); the index
+  is now (COTS seen + feeding scars counted) per tow. For FMPCRS 2025-02, which pre-dates the
+  count, scarred tows were imputed from the category (present = 2, common = 11).
+- **Refitted and re-bundled (10 posteriors):** `surf_from_manta_{tow,cull,reef}_cots`,
+  `deep_from_manta_{tow,cull,reef}_cots`, `eDNAprop_from_manta_reef`, `eDNAconc_from_manta_reef`,
+  and the tow-level combined-count responses `manta_from_{surf,deep}_combined_tow_cots`. The other
+  posteriors are unchanged (the manta-as-response models on the COTS-or-scar presence indicator,
+  and every coral and non-manta model).
+- **Behaviour change in `GBR_calibrate(from = "Manta")`:** `from.scars` now takes the number of
+  scars counted on each tow. Numeric values were previously read as 0/1 presence and are now read
+  as counts. The codes `"a"`, `"p"`, `"c"` are still accepted and are converted to 0, 2 and 11
+  scars (with a message). The `Manta_scars` output column is now the total number of scars (it was
+  the number of tows with scars) and `Manta_density` = (COTS + scars) / tows.
+- `predictor_range.csv`: the manta rows now give the range of the new index (tow 0-20, cull site
+  0-7, reef 0-2.15), which also sets the default `GBR_curve()` grid and the `observed` flag.
+- Docs, README and tests updated (new test: code-to-count conversion and numeric counts; the
+  direct-calculation test for `surf_from_manta_reef_cots` allows 6% rather than 3% because the new
+  reef-level posterior has a heavier tail and `GBR_calibrate()` averages a 2000-draw subsample).
+
 ## 0.4.1 -- fix predictor offset (`eps`) for 25 COTS models
 
 - **Bug fix.** `model_registry.csv` recorded `eps = 1e-04` for the 24

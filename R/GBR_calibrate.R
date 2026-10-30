@@ -34,9 +34,11 @@
 #'   observation. Only used for `from = "ReefScan_surface"` and `"ReefScan_deep"`, where it
 #'   is the number of tows each count was collected over. If `NULL` (default)
 #'   each observation is assumed to be one tow.
-#' @param from.scars Only used for `from = "Manta"`: the feeding-scar code for
-#'   each tow, one of `"a"` (absent), `"p"` (present) or `"c"` (common), or
-#'   numeric 0/1. Must be the same length as `from.metric`.
+#' @param from.scars Only used for `from = "Manta"`: the number of feeding scars
+#'   counted on each tow (non-negative numbers). If a count was not recorded,
+#'   the feeding-scar code can be given instead: `"a"` (absent, 0 scars),
+#'   `"p"` (present) or `"c"` (common), which are converted to 0, 2 and 11
+#'   scars as in the BR-04 analysis. Must be the same length as `from.metric`.
 #' @param to.effort The amount of effort assumed for the prediction, when the
 #'   `to` tool needs one. For `to = "Manta"` at tow level it is the tow
 #'   distance in metres; for `to = "eDNA_conc"` it is the number of PCR assays;
@@ -49,8 +51,10 @@
 #' @param to.type Only used for `to = "Manta"`, where there are two kinds of
 #'   prediction: `"presence"` (default), the probability that a tow (or the
 #'   proportion of tows) has a scar present or at least one COTS observed;
-#'   and `"count"`, the combined COTS-plus-scar count. Manta counts can only be
-#'   predicted from the ReefScan tools, not from eDNA.
+#'   and `"count"`, the combined count: COTS plus feeding scars counted on a
+#'   tow (tow level), or the number of the `to.nTows` tows with a scar or COTS
+#'   (cull-site and reef level). Manta counts can only be predicted from the
+#'   ReefScan tools, not from eDNA.
 #' @param sites A character or factor saying which observations belong to
 #'   which site (a cull site or reef, depending on `level`). One row of output
 #'   is produced per site. When data come from several reefs, make sure the
@@ -70,8 +74,9 @@
 #'
 #' \describe{
 #'   \item{Manta}{`from.metric` is the number of COTS seen on each tow and
-#'     `from.scars` the scar code of each tow. The predictor is the combined
-#'     density (COTS seen plus number of tows with scars, per tow).}
+#'     `from.scars` the number of feeding scars counted on each tow (or the
+#'     scar code). The predictor is the combined density (COTS seen plus
+#'     scars counted, per tow).}
 #'   \item{ReefScan_surface, ReefScan_deep}{`from.metric` is the number of COTS detected
 #'     in the images; `from.effort` is the number of tows it was collected
 #'     over (default one per observation). Values that share a site label are
@@ -130,11 +135,11 @@
 #' )
 #'
 #' # COTS: predict the number of ReefScan Surface COTS seen over 27 tows from
-#' # manta tow counts and scars
+#' # manta tow counts of COTS and of feeding scars
 #' manta <- data.frame(
 #'   reef = rep(c("reefA", "reefB"), each = 6),
 #'   cots = c(0, 0, 1, 0, 0, 0, 0, 2, 1, 0, 3, 1),
-#'   scars = c("a", "a", "p", "a", "a", "a", "p", "p", "p", "a", "c", "p")
+#'   scars = c(0, 0, 1, 0, 0, 0, 2, 1, 3, 0, 12, 2)
 #' )
 #' GBR_calibrate(
 #'   from = "Manta", to = "ReefScan_surface", level = "reef",

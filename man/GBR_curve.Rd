@@ -59,8 +59,10 @@ cull site, 27 for a reef).}
 \item{to.type}{Only used for \code{to = "Manta"}, where there are two kinds of
 prediction: \code{"presence"} (default), the probability that a tow (or the
 proportion of tows) has a scar present or at least one COTS observed;
-and \code{"count"}, the combined COTS-plus-scar count. Manta counts can only be
-predicted from the ReefScan tools, not from eDNA.}
+and \code{"count"}, the combined count: COTS plus feeding scars counted on a
+tow (tow level), or the number of the \code{to.nTows} tows with a scar or COTS
+(cull-site and reef level). Manta counts can only be predicted from the
+ReefScan tools, not from eDNA.}
 
 \item{intLevel}{A scalar between 0.5 and 1, usually 0.95 or 0.9, giving the
 level of the confidence and prediction intervals.}
@@ -88,8 +90,8 @@ It uses the same models, tool names and defaults as \code{\link[=GBR_calibrate]{
 \describe{
 \item{coral_manta, coral_surface, coral_deep}{Hard coral cover, a
 proportion between 0 and 1.}
-\item{Manta}{The combined density: (COTS seen + number of tows with
-scars) per tow.}
+\item{Manta}{The combined density: (COTS seen + feeding scars counted)
+per tow.}
 \item{ReefScan_surface, ReefScan_deep}{COTS per tow.}
 \item{eDNA_conc}{Total concentration per PCR assay.}
 \item{eDNA_prop}{The proportion of positive samples.}

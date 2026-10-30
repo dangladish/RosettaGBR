@@ -61,19 +61,33 @@ test_that("Negative Binomial predictions scale with effort and match a direct ca
   post <- post_of("surf_from_manta_reef_cots")
   set.seed(2)
   out <- suppressMessages(GBR_calibrate(
-    "Manta", "ReefScan_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c("a", "p", "p", "a"),
+    "Manta", "ReefScan_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c(0, 3, 1, 0),
     sites = rep("r", 4), to.nTows = 10
   ))
-  x <- (3 + 2) / 4
+  x <- (3 + 4) / 4
   direct <- trimmed(exp(post[, "alpha"] + post[, "beta"] * log(x + 0.01) + log(10)))
-  expect_equal(out$mean_ReefScan_surface, direct, tolerance = 0.03)
+  # GBR_calibrate() uses a random 2000-draw subsample of a heavy-tailed reef-level posterior, so allow a few percent
+  expect_equal(out$mean_ReefScan_surface, direct, tolerance = 0.06)
   expect_equal(out$Manta_density, x)
   set.seed(2)
   out20 <- suppressMessages(GBR_calibrate(
-    "Manta", "ReefScan_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c("a", "p", "p", "a"),
+    "Manta", "ReefScan_surface", "reef", from.metric = c(0, 2, 1, 0), from.scars = c(0, 3, 1, 0),
     sites = rep("r", 4), to.nTows = 20
   ))
   expect_equal(out20$mean_ReefScan_surface / out$mean_ReefScan_surface, 2, tolerance = 0.05)
+})
+
+test_that("manta scar codes convert to counts (a = 0, p = 2, c = 11) and numeric counts are used as given", {
+  base <- list("Manta", "ReefScan_surface", "reef", from.metric = c(0, 1, 2, 0), sites = rep("r", 4), to.nTows = 10)
+  call_with <- function(scars) suppressMessages(do.call(GBR_calibrate, c(base, list(from.scars = scars))))
+  set.seed(4); byCode <- call_with(c("a", "p", "c", "p"))
+  set.seed(4); byCount <- call_with(c(0, 2, 11, 2))
+  expect_equal(byCode$Manta_scars, 15)
+  expect_equal(byCode$Manta_density, (3 + 15) / 4)
+  expect_equal(byCode$mean_ReefScan_surface, byCount$mean_ReefScan_surface)
+  expect_message(do.call(GBR_calibrate, c(base, list(from.scars = c("a", "p", "c", "p")))), "converted")
+  expect_error(do.call(GBR_calibrate, c(base, list(from.scars = c(0, -1, 0, 0)))), "scar counts")
+  expect_error(do.call(GBR_calibrate, c(base, list(from.scars = c("a", "x", "a", "a")))), "scar counts")
 })
 
 test_that("intervals are ordered and widen with intLevel", {

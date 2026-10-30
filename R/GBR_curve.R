@@ -27,8 +27,8 @@
 #' \describe{
 #'   \item{coral_manta, coral_surface, coral_deep}{Hard coral cover, a
 #'     proportion between 0 and 1.}
-#'   \item{Manta}{The combined density: (COTS seen + number of tows with
-#'     scars) per tow.}
+#'   \item{Manta}{The combined density: (COTS seen + feeding scars counted)
+#'     per tow.}
 #'   \item{ReefScan_surface, ReefScan_deep}{COTS per tow.}
 #'   \item{eDNA_conc}{Total concentration per PCR assay.}
 #'   \item{eDNA_prop}{The proportion of positive samples.}

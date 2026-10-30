@@ -8,9 +8,9 @@
 "coral_deep","tow",0,0.936709,56
 "coral_deep","cull_site",0,0.480122,30
 "coral_deep","reef",0.0175978,0.37096,19
-"manta","tow",0,10,1643
-"manta","cull_site",0,4.33333,342
-"manta","reef",0,0.975,44
+"manta","tow",0,20,1643
+"manta","cull_site",0,7,342
+"manta","reef",0,2.15,44
 "reefscan_surface","tow",0,11,1095
 "reefscan_surface","cull_site",0,2.6,243
 "reefscan_surface","reef",0,0.775,33

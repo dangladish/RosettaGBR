@@ -34,8 +34,10 @@ level only.}
 \item{to.type}{Only used for \code{to = "Manta"}, where there are two kinds of
 prediction: \code{"presence"} (default), the probability that a tow (or the
 proportion of tows) has a scar present or at least one COTS observed;
-and \code{"count"}, the combined COTS-plus-scar count. Manta counts can only be
-predicted from the ReefScan tools, not from eDNA.}
+and \code{"count"}, the combined count: COTS plus feeding scars counted on a
+tow (tow level), or the number of the \code{to.nTows} tows with a scar or COTS
+(cull-site and reef level). Manta counts can only be predicted from the
+ReefScan tools, not from eDNA.}
 
 \item{summary}{If \code{TRUE}, return a one-row-per-parameter table of the
 posterior mean, standard deviation and 2.5\%, 50\% and 97.5\% quantiles
