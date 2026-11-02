@@ -175,11 +175,11 @@ GBR_calibrate(
 #> 1 reefA          1           1          6     0.3333333                     27
 #> 2 reefB          7          20          6     4.5000000                     27
 #>   mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface
-#> 1              2.260749                0.4761434                 14.35005
-#> 2             52.761780                2.4870009                525.49432
+#> 1              2.567873                0.7795857                 10.45548
+#> 2             24.867127                2.6052505                194.92347
 #>   lowerPI_ReefScan_surface upperPI_ReefScan_surface
-#> 1                        0                  17.0000
-#> 2                        0                 525.4943
+#> 1                        0                   21.000
+#> 2                        0                  216.075
 ```
 
 The effort assumed in the prediction can be changed with `to.nTows` (for
@@ -195,11 +195,11 @@ GBR_calibrate(
 #> 1 reefA          1           1          6     0.3333333                     10
 #> 2 reefB          7          20          6     4.5000000                     10
 #>   mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface
-#> 1             0.8084995                0.1784667                 4.249228
-#> 2            20.5523132                0.7830771               207.147933
+#> 1             0.9403933                0.2785724                  3.73992
+#> 2             9.0766982                0.8125559                 67.24793
 #>   lowerPI_ReefScan_surface upperPI_ReefScan_surface
-#> 1                        0                   8.0000
-#> 2                        0                 207.1479
+#> 1                        0                    9.000
+#> 2                        0                   71.025
 ```
 
 ### Predicting manta tows
@@ -225,11 +225,11 @@ GBR_calibrate(
 )
 #> Predictions are made using 27 tows (median of the BR-04 data at this level).
 #>    site eDNA_prop_samples eDNA_prop Manta_presence_nTows mean_Manta_presence
-#> 1 reefA                24      0.25                   27          0.02692562
+#> 1 reefA                24      0.25                   27          0.02733282
 #>   lowerCI_Manta_presence upperCI_Manta_presence lowerPI_Manta_presence
-#> 1              0.0102132             0.05109609                      0
+#> 1             0.01039157             0.05192562                      0
 #>   upperPI_Manta_presence
-#> 1              0.2962963
+#> 1              0.2601852
 
 # Tow level: one row per tow, ReefScan Surface counts from three tows
 GBR_calibrate(
@@ -241,13 +241,13 @@ GBR_calibrate(
 #> 2 tow_2                     1                       1                        1
 #> 3 tow_3                     3                       1                        3
 #>   Manta_count_distance_m mean_Manta_count lowerCI_Manta_count
-#> 1                    200       0.04767958          0.01704926
-#> 2                    200       1.04402687          0.20281279
-#> 3                    200       2.27129065          0.34390933
+#> 1                    200       0.04654302          0.01555655
+#> 2                    200       0.78723567          0.16355803
+#> 3                    200       1.59945886          0.25385905
 #>   upperCI_Manta_count lowerPI_Manta_count upperPI_Manta_count
-#> 1           0.1001247                   0               1.000
-#> 2           3.5609452                   0               8.000
-#> 3           9.5243481                   0              21.025
+#> 1          0.09398045                   0                   1
+#> 2          2.46691073                   0                   7
+#> 3          5.97717389                   0                  14
 ```
 
 ### eDNA
@@ -290,12 +290,12 @@ plot(cots_curve)
 ``` r
 head(cots_curve)
 #>             x       mean    lowerCI    upperCI lowerPI upperPI observed
-#> 1 0.000000000 0.03236462 0.01445671 0.05691800       0       1     TRUE
-#> 2 0.001122334 0.03417921 0.01536218 0.05963012       0       1     TRUE
-#> 3 0.004489338 0.03914966 0.01761985 0.06784284       0       1     TRUE
-#> 4 0.010101010 0.04632232 0.02069466 0.07963166       0       1     TRUE
-#> 5 0.017957351 0.05487642 0.02468444 0.09467229       0       1     TRUE
-#> 6 0.028058361 0.06428847 0.02869510 0.11126984       0       1     TRUE
+#> 1 0.000000000 0.03115139 0.01345180 0.05422139       0       1     TRUE
+#> 2 0.001224365 0.03288871 0.01417769 0.05702883       0       1     TRUE
+#> 3 0.004897459 0.03757077 0.01622785 0.06465012       0       1     TRUE
+#> 4 0.011019284 0.04417845 0.01902396 0.07595532       0       1     TRUE
+#> 5 0.019589838 0.05189911 0.02244934 0.08989420       0       1     TRUE
+#> 6 0.030609122 0.06024344 0.02555273 0.10501511       0       1     TRUE
 ```
 
 The axis labels are kept with the curve, so the scale of `x` and of the
@@ -347,9 +347,9 @@ A one-row-per-parameter summary is available with `summary = TRUE`:
 ``` r
 GBR_posterior(from = "Manta", to = "ReefScan_surface", level = "reef", summary = TRUE)
 #>   parameter       mean        sd        q2.5        q50     q97.5
-#> 1     alpha -1.7458900 1.0684211 -3.27015871 -1.9218575 0.8518705
-#> 2      beta  0.9789144 0.3435814  0.35935098  0.9614559 1.7161967
-#> 3         r  0.2105414 0.1515395  0.04699403  0.1742713 0.5889271
+#> 1     alpha -1.7641783 0.7866116 -3.01757681 -1.8689593 0.0961330
+#> 2      beta  0.7320534 0.2489150  0.26992354  0.7191376 1.2524572
+#> 3         r  0.2498392 0.1359220  0.07805281  0.2198736 0.6016213
 ```
 
 and the draws can be used for your own calculations. For example, the

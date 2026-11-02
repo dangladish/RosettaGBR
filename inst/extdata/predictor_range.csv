@@ -11,11 +11,11 @@
 "manta","tow",0,20,1643
 "manta","cull_site",0,7,342
 "manta","reef",0,2.15,44
-"reefscan_surface","tow",0,11,1095
-"reefscan_surface","cull_site",0,2.6,243
-"reefscan_surface","reef",0,0.775,33
-"reefscan_deep","tow",0,48,90
-"reefscan_deep","cull_site",0,4,29
-"reefscan_deep","reef",0,1.5,22
+"reefscan_surface","tow",0,12,1097
+"reefscan_surface","cull_site",0,2.8,244
+"reefscan_surface","reef",0,0.95,34
+"reefscan_deep","tow",0,56,91
+"reefscan_deep","cull_site",0,5.333333,29
+"reefscan_deep","reef",0,1.8,22
 "edna_conc","reef",0,67.5417,24
 "edna_prop","reef",0,0.791667,24

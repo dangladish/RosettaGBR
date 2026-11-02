@@ -1,5 +1,22 @@
 # RosettaGBR Changelog
 
+## 0.5.1 -- refitted on the November 2026 COTSpotter re-export
+
+- **Data update, no change to the interface.** COTSpotter re-exported its detections (more detections
+  certified, some revised; 302 detections versus 251 before, 59 of them genuinely new). Every model that uses
+  a ReefScan Surface or ReefScan Deep COTS count as predictor or response was refitted: 28 bundled
+  posteriors changed (the 24 cross-method COTS models between manta tow, ReefScan Surface and ReefScan
+  Deep, at tow, cull-site and reef level, and the four eDNA <-> ReefScan Surface models). The coral models,
+  the manta <-> eDNA models and the eDNA <-> eDNA models are unchanged.
+- **Size of the changes.** For 27 of the 28 models the slope moved by less than one posterior SD and no
+  model changed whether its 95% credible interval excludes zero. The exception is
+  `surf_from_eDNAconc_reef` (slope 3.8 -> 1.6; only 17 reefs, and reef 21-491 carries most of the signal).
+  The manta <-> ReefScan Surface slopes are 8-25% smaller.
+- `predictor_range.csv`: the ReefScan Surface and ReefScan Deep rows now give the ranges of the new counts
+  (Surface tow 0-12, cull site 0-2.8, reef 0-0.95; Deep tow 0-56, cull site 0-5.33, reef 0-1.8), which sets
+  the default `GBR_curve()` grid and the `observed` flag.
+- Model registry (family, link, offset, `eps`) unchanged.
+
 ## 0.5.0 -- the manta predictor now uses feeding-scar COUNTS
 
 - **Change to the manta COTS-plus-scars index.** BR-04 previously added scar *presence* (0/1 per
