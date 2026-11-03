@@ -225,11 +225,11 @@ GBR_calibrate(
 )
 #> Predictions are made using 27 tows (median of the BR-04 data at this level).
 #>    site eDNA_prop_samples eDNA_prop Manta_presence_nTows mean_Manta_presence
-#> 1 reefA                24      0.25                   27          0.02733282
+#> 1 reefA                24      0.25                   27           0.0365675
 #>   lowerCI_Manta_presence upperCI_Manta_presence lowerPI_Manta_presence
-#> 1             0.01039157             0.05192562                      0
+#> 1             0.01718389             0.06220822                      0
 #>   upperPI_Manta_presence
-#> 1              0.2601852
+#> 1              0.3703704
 
 # Tow level: one row per tow, ReefScan Surface counts from three tows
 GBR_calibrate(

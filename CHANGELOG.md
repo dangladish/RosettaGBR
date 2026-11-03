@@ -1,5 +1,27 @@
 # RosettaGBR Changelog
 
+## 1.0.0 -- first stable release; eDNA models refitted with manta tows from all eight voyages
+
+- **First stable release.** The interface (`GBR_calibrate()`, `GBR_curve()`, `GBR_posterior()`) has been unchanged since 0.3.0 and the 52
+  calibration models are those of the BR-04 final report. Later refits on new data will be minor or patch releases.
+  (This release was developed as 0.5.2 and relabelled 1.0.0 before publication.)
+
+- **Data update, no change to the interface.** The 3-voyage exclusion exists because of ReefScan data quality,
+  so the manta <-> eDNA models now use manta tows from all eight FMPCRS voyages (they previously used the five
+  ReefScan-filtered voyages). Together with a case-sensitivity fix in the eDNA reef matching (eDNA `21-250A` is
+  manta `21-250a`), the reef set for those models grows from 24 to 32 reefs (the eDNA <-> eDNA models use the same
+  32 reefs); the eDNA <-> ReefScan Surface models gain one reef (17 to 18) and still use the ReefScan-filtered data.
+- **Refitted and re-bundled (10 posteriors):** the four manta <-> eDNA models, the two eDNA <-> eDNA models and
+  the four eDNA <-> ReefScan Surface models. All other bundled posteriors are unchanged.
+- **Size of the changes (slope, posterior mean):** `eDNAconc_from_manta_reef` 0.23 -> 0.30, `eDNAprop_from_manta_reef`
+  0.17 -> 0.23, `manta_from_eDNAconc_binary_reef` 0.35 -> 0.25, `manta_from_eDNAprop_binary_reef` 0.47 -> 0.27,
+  `eDNAconc_from_eDNAprop_reef` 1.53 -> 1.59, `eDNAprop_from_eDNAconc_reef` 0.88 -> 0.98; the ReefScan Surface pairs
+  move by less than 0.35. No slope changes sign. Two borderline intervals cross zero: `eDNAconc_from_manta_reef`
+  (now 0.08 to 0.53, previously -0.02 to 0.51) and `eDNAconc_from_surf_reef` (now -0.01 to 0.64, previously 0.00 to 0.66).
+- `predictor_range.csv`: the eDNA rows now give the ranges over the 32 reefs (concentration per assay 0-116.6,
+  proportion positive 0-0.958), which sets the default `GBR_curve()` grid and the `observed` flag.
+- Model registry (family, link, offset, `eps`) unchanged.
+
 ## 0.5.1 -- refitted on the November 2026 COTSpotter re-export
 
 - **Data update, no change to the interface.** COTSpotter re-exported its detections (more detections
