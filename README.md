@@ -136,14 +136,14 @@ GBR_calibrate(
   from.metric = surf$cover, sites = surf$reef
 )
 #>    site coral_surface_cover coral_surface_nObs mean_coral_manta
-#> 1 reefA               0.150                  5         0.236890
-#> 2 reefB               0.424                  5         0.436909
+#> 1 reefA               0.150                  5        0.2403797
+#> 2 reefB               0.424                  5        0.4445107
 #>   lowerCI_coral_manta upperCI_coral_manta lowerPI_coral_manta
-#> 1           0.2063297           0.2712871          0.09222477
-#> 2           0.3571007           0.5190252          0.23456966
+#> 1           0.2075610           0.2754256          0.09490689
+#> 2           0.3676855           0.5201462          0.24493720
 #>   upperPI_coral_manta
-#> 1           0.4220530
-#> 2           0.6367375
+#> 1           0.4263460
+#> 2           0.6627271
 ```
 
 The manta tow categories can be supplied as they are recorded (`"0"`,
@@ -175,11 +175,11 @@ GBR_calibrate(
 #> 1 reefA          1           1          6     0.3333333                     27
 #> 2 reefB          7          20          6     4.5000000                     27
 #>   mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface
-#> 1              2.567873                0.7795857                 10.45548
-#> 2             24.867127                2.6052505                194.92347
+#> 1              2.544293                0.7736856                 10.45548
+#> 2             24.366436                2.4943023                194.92347
 #>   lowerPI_ReefScan_surface upperPI_ReefScan_surface
-#> 1                        0                   21.000
-#> 2                        0                  216.075
+#> 1                        0                   24.000
+#> 2                        0                  214.125
 ```
 
 The effort assumed in the prediction can be changed with `to.nTows` (for
@@ -195,11 +195,11 @@ GBR_calibrate(
 #> 1 reefA          1           1          6     0.3333333                     10
 #> 2 reefB          7          20          6     4.5000000                     10
 #>   mean_ReefScan_surface lowerCI_ReefScan_surface upperCI_ReefScan_surface
-#> 1             0.9403933                0.2785724                  3.73992
-#> 2             9.0766982                0.8125559                 67.24793
+#> 1             0.9361019                0.2816624                 3.822715
+#> 2             8.8748531                0.8323934                65.847762
 #>   lowerPI_ReefScan_surface upperPI_ReefScan_surface
-#> 1                        0                    9.000
-#> 2                        0                   71.025
+#> 1                        0                  7.00000
+#> 2                        0                 65.84776
 ```
 
 ### Predicting manta tows
@@ -225,11 +225,11 @@ GBR_calibrate(
 )
 #> Predictions are made using 27 tows (median of the BR-04 data at this level).
 #>    site eDNA_prop_samples eDNA_prop Manta_presence_nTows mean_Manta_presence
-#> 1 reefA                24      0.25                   27           0.0365675
+#> 1 reefA                24      0.25                   27          0.03646221
 #>   lowerCI_Manta_presence upperCI_Manta_presence lowerPI_Manta_presence
-#> 1             0.01718389             0.06220822                      0
+#> 1             0.01701874             0.06220822                      0
 #>   upperPI_Manta_presence
-#> 1              0.3703704
+#> 1              0.3333333
 
 # Tow level: one row per tow, ReefScan Surface counts from three tows
 GBR_calibrate(
@@ -241,13 +241,13 @@ GBR_calibrate(
 #> 2 tow_2                     1                       1                        1
 #> 3 tow_3                     3                       1                        3
 #>   Manta_count_distance_m mean_Manta_count lowerCI_Manta_count
-#> 1                    200       0.04654302          0.01555655
-#> 2                    200       0.78723567          0.16355803
-#> 3                    200       1.59945886          0.25385905
+#> 1                    200       0.04652497          0.01620346
+#> 2                    200       0.78876304          0.16399212
+#> 3                    200       1.60343471          0.25944399
 #>   upperCI_Manta_count lowerPI_Manta_count upperPI_Manta_count
 #> 1          0.09398045                   0                   1
 #> 2          2.46691073                   0                   7
-#> 3          5.97717389                   0                  14
+#> 3          5.96196112                   0                  14
 ```
 
 ### eDNA
@@ -290,12 +290,12 @@ plot(cots_curve)
 ``` r
 head(cots_curve)
 #>             x       mean    lowerCI    upperCI lowerPI upperPI observed
-#> 1 0.000000000 0.03115139 0.01345180 0.05422139       0       1     TRUE
-#> 2 0.001224365 0.03288871 0.01417769 0.05702883       0       1     TRUE
-#> 3 0.004897459 0.03757077 0.01622785 0.06465012       0       1     TRUE
-#> 4 0.011019284 0.04417845 0.01902396 0.07595532       0       1     TRUE
-#> 5 0.019589838 0.05189911 0.02244934 0.08989420       0       1     TRUE
-#> 6 0.030609122 0.06024344 0.02555273 0.10501511       0       1     TRUE
+#> 1 0.000000000 0.03104507 0.01348269 0.05452189       0       1     TRUE
+#> 2 0.001224365 0.03277377 0.01428640 0.05745042       0       1     TRUE
+#> 3 0.004897459 0.03743333 0.01641382 0.06474415       0       1     TRUE
+#> 4 0.011019284 0.04400906 0.01923614 0.07595532       0       1     TRUE
+#> 5 0.019589838 0.05169465 0.02256857 0.08989420       0       1     TRUE
+#> 6 0.030609122 0.06000087 0.02555296 0.10545405       0       1     TRUE
 ```
 
 The axis labels are kept with the curve, so the scale of `x` and of the
@@ -326,12 +326,12 @@ software is needed to use them. The draws are for the average reef
 draws <- GBR_posterior(from = "coral_surface", to = "coral_manta", level = "reef")
 head(draws)
 #>        alpha     beta      phi
-#> 1 -0.7148631 2.285596 36.08983
-#> 2 -0.5553514 1.543406 21.92564
-#> 3 -0.8206184 2.714107 25.74112
-#> 4 -0.9710413 3.311695 20.27698
-#> 5 -0.4935571 1.277098 30.22880
-#> 6 -0.5977761 1.710061 20.87790
+#> 1 -0.7771192 3.023637 19.66934
+#> 2 -0.6005797 1.951209 26.97146
+#> 3 -0.5382154 1.629457 22.18651
+#> 4 -0.7202062 2.410702 21.33784
+#> 5 -0.6696254 2.249688 23.87051
+#> 6 -0.6253557 2.196521 21.14049
 ```
 
 The `model_info` attribute says which model it is and how the parameters
@@ -362,7 +362,7 @@ eta <- draws$alpha + draws$beta * 0.3
 mu <- if (info$link == "loglog") exp(-exp(-eta)) else plogis(eta)
 quantile(mu, c(0.025, 0.5, 0.975))
 #>      2.5%       50%     97.5% 
-#> 0.3009403 0.3458816 0.3943262
+#> 0.3034192 0.3506046 0.3966901
 ```
 
 The parameters are `alpha` and `beta` for every model, plus `phi` (Beta

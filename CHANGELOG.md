@@ -1,5 +1,22 @@
 # RosettaGBR Changelog
 
+## 1.0.1 -- manta tow coral category midpoints corrected
+
+- **Data/convention fix, no change to the interface.** The manta tow ordinal hard coral categories 4-, 4+, 5- and 5+
+  were converted to 0.55, 0.65, 0.75 and 0.875 cover; the manta README's category ranges (50-62.5, 62.5-75, 75-87.5 and
+  87.5-100%) have midpoints 0.5625, 0.6875, 0.8125 and 0.9375, which are now used (categories 0 to 3+ are unchanged).
+  This affects 14% of the 1,643 tows used. `GBR_calibrate()` converts category input with the new values.
+- **Refitted and re-bundled (12 posteriors):** the six manta <-> ReefScan Surface and six manta <-> ReefScan Deep coral
+  models (all three levels, both directions). The ReefScan Surface <-> ReefScan Deep coral models and all COTS and eDNA
+  models are unchanged.
+- **Size of the changes (slope, posterior mean):** `manta_from_surf_tow` 1.79 -> 1.92, `manta_from_surf_cull` 1.94 -> 2.04,
+  `manta_from_surf_reef` 2.03 -> 2.06, `surf_from_manta_tow` 3.29 -> 3.14, `surf_from_manta_cull` 3.57 -> 3.43,
+  `surf_from_manta_reef` 3.89 -> 3.72; the six ReefScan Deep pairs move by less than 0.08 and keep their signs and
+  credible intervals' relation to zero.
+- `predictor_range.csv`: the manta coral rows now give the ranges 0-0.9375 (tow), 0.025-0.9375 (cull site) and
+  0.05125-0.8125 (reef), which sets the default `GBR_curve()` grid and the `observed` flag.
+- Model registry (family, link, offset, `eps`) unchanged.
+
 ## 1.0.0 -- first stable release; eDNA models refitted with manta tows from all eight voyages
 
 - **First stable release.** The interface (`GBR_calibrate()`, `GBR_curve()`, `GBR_posterior()`) has been unchanged since 0.3.0 and the 52

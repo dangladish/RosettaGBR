@@ -16,7 +16,7 @@ defaultEffort <- list(
 # Midpoints (proportion cover) of the manta tow ordinal coral categories
 coralMidpoints <- c(
   "0" = 0, "1-" = 0.025, "1+" = 0.075, "2-" = 0.15, "2+" = 0.25,
-  "3-" = 0.35, "3+" = 0.45, "4-" = 0.55, "4+" = 0.65, "5-" = 0.75, "5+" = 0.875
+  "3-" = 0.35, "3+" = 0.45, "4-" = 0.5625, "4+" = 0.6875, "5-" = 0.8125, "5+" = 0.9375
 )
 
 validTools <- c("manta", "reefscan_surface", "reefscan_deep", "edna_conc", "edna_prop",

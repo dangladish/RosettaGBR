@@ -116,6 +116,8 @@ test_that("input is aggregated per site", {
 test_that("manta ordinal coral categories are converted to midpoints", {
   a <- GBR_calibrate("coral_manta", "coral_surface", "reef", from.metric = c("2-", "2+"), sites = c("r", "r"))
   expect_equal(a$coral_manta_cover, 0.2)
+  hi <- GBR_calibrate("coral_manta", "coral_surface", "reef", from.metric = c("4-", "4+", "5-", "5+"), sites = rep("r", 4))
+  expect_equal(hi$coral_manta_cover, mean(c(0.5625, 0.6875, 0.8125, 0.9375)))
   expect_error(GBR_calibrate("coral_manta", "coral_surface", "reef", from.metric = "9z", sites = "r"), "Unrecognised")
 })
 

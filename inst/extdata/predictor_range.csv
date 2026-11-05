@@ -1,7 +1,7 @@
 "tool","level","min","max","n"
-"coral_manta","tow",0,0.875,1643
-"coral_manta","cull_site",0.025,0.875,342
-"coral_manta","reef",0.05125,0.75,44
+"coral_manta","tow",0,0.9375,1643
+"coral_manta","cull_site",0.025,0.9375,342
+"coral_manta","reef",0.05125,0.8125,44
 "coral_surface","tow",0.0026475,0.896933,1091
 "coral_surface","cull_site",0.00609756,0.804028,239
 "coral_surface","reef",0.0261364,0.43692,32

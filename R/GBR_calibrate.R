@@ -89,7 +89,8 @@
 #'     internally.}
 #'   \item{coral_manta}{The proportion (0-1) of hard coral cover for each tow,
 #'     or the manta ordinal category as a character (`"0"`, `"1-"`, `"1+"`,
-#'     ..., `"5+"`), which is converted to the category midpoint. Multiple
+#'     ..., `"5+"`), which is converted to the midpoint of the category's cover
+#'     range (e.g. `"4-"` 50-62.5% = 0.5625, `"5+"` 87.5-100% = 0.9375). Multiple
 #'     observations per site are averaged.}
 #'   \item{coral_surface, coral_deep}{The proportion (0-1) of hard coral cover.
 #'     Multiple observations per site are averaged.}
